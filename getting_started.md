@@ -1,5 +1,12 @@
+---
+title: Getting Started
+subtitle: Onboarding tutorials for new lab members
+authors:
+  - name: Christian S. Ramirez
+  - name: Greg Andrews
+---
 # Computing Access
-_courtesy of Greg Andrews_
+
 
 ## iTerm2 (Mac)
 If you are on Mac, I prefer to user [iTerm2](https://iterm2.com/) as opposed to the stock terminal, it supports multiple tabs, is much more customizable, and has many additional features.
