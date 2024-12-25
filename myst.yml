@@ -2,7 +2,8 @@ version: 1
 site:
   options:
     favicon: favicon.ico
-    logo_text: ZLab Wiki
+    logo: light_logo.png
+    logo_dark: dark_logo.png
   template: book-theme
 project:
   github: https://github.com/christian728504/zlabwiki
