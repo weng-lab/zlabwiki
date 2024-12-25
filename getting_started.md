@@ -7,7 +7,6 @@ authors:
 ---
 # Computing Access
 
-
 ## iTerm2 (Mac)
 If you are on Mac, I prefer to user [iTerm2](https://iterm2.com/) as opposed to the stock terminal, it supports multiple tabs, is much more customizable, and has many additional features.
 
@@ -60,13 +59,13 @@ Host z010 z011 z012 z013 z014
 `ssh USERNAME@bastion.wenglab.org`
 
 If it's your first time, you will be prompted to scan the QR code with any two-factor authentication app. You should also be prompted to change your password. 
-***
-🔴 **IMPORTANT** 🔴 Save this QR code somewhere!
-***
+```{important}
+Save this QR code somewhere!
+```
 I personally recommend using Microsoft Authenticator, since this is the 2FA app used by your UMass Microsoft account. However, it may also be convenient to choose a 2FA app that has a desktop client. 
-***
-🔴 **IMPORTANT** 🔴 From this point forward, every time you login, you will provide your password + two-factor code with no spaces.
-***
+```{important}
+From this point forward, every time you login, you will provide your password + two-factor code with no spaces.
+```
 From bastion, you can then `ssh` into any of the ZLab servers:
 ```
 ssh HOSTNAME

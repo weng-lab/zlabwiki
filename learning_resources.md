@@ -1,6 +1,6 @@
 ---
-title: Computing Resources
-subtitle: Technical guides for commonly used software tools
+title: Learning Resources
+subtitle: Curated collection of bioinformatics learning materials 
 author: Christian S. Ramirez
 ---
 # Foundation Skills 

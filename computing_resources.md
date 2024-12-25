@@ -3,17 +3,17 @@ title: Computing Resources
 subtitle: Technical guides for commonly used software tools
 author: Christian S. Ramirez
 ---
-## Secure Jupyter
-### Why?
+# Secure Jupyter
+## Why?
 HTTPS encrypts data between your browser and JupyterLab to prevent eavesdropping/tampering, while password authentication ensures only authorized users can access your notebooks and execute code on your system.
-### Setting up your HTTPS and `jupyter_server_config.py`
-#### Make jupyter password and `certfile` directory
+## Setting up your HTTPS and `jupyter_server_config.py`
+### Make jupyter password and `certfile` directory
 ```
 mkdir -p ~/.jupyter/certfiles
 jupyter lab --generate-config
 jupyter lab password 
 ```
-#### Create your private (.key) and public key (.pem)
+### Create your private (.key) and public key (.pem)
 Make sure to replace `HOSTNAME` with the machine you are on (i.e. z014).
 ```
 openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
@@ -22,7 +22,7 @@ openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
   -subj "/CN=HOSTNAME"
 chmod 600 ~/.jupyter/certfiles/jupyter.key
 ```
-#### Add config options to your `jupyter_server_conifg.py`
+### Add config options to your `jupyter_server_conifg.py`
 Make sure to replace `HOSTNAME` with the machine you are on (i.e. z014) and `USERNAME` with your username.
 ```
 c.ServerApp.certfile = '/Users/USERNAME/.jupyter/certfiles/jupyter.pem'
@@ -44,18 +44,18 @@ As opposed to:
 ```
 singularity exec --writable -B /data,/zata /zata/zippy/$(whoami)/bin/bioinformatics jupyter lab --port=8888 --ip=HOSTNAME --no-browser --notebook-dir=/data/GROUP/$(whoami)
 ```
-## Screen
-### Why?
+# Screen
+## Why?
 Screen allows you to manage multiple terminal sessions within a single window and keeps processes running even if your connection drops, making it useful running remote jobs.
-#### Commonly used screen options and shortcuts
-##### Options
+### Commonly used screen options and shortcuts
+#### Options
 ```
 screen -S [name]   # Start new named session
 screen -ls         # List sessions
 screen -r [name]   # Reattach to session
 screen -d -r       # Detach existing and reattach here
 ```
-##### Shortcut keys
+#### Shortcut keys
 ```
 Ctrl-a + c       # Create new window
 Ctrl-a + "       # List/select windows
@@ -67,8 +67,8 @@ Ctrl-a + |       # Split vertical
 Ctrl-a + <TAB>   # Switch split regions
 Ctrl-a + X       # Close active split
 ```
-#### All screen command flags and shortcuts
-##### Options
+### All screen command flags and shortcuts
+#### Options
 ```
 -a               # Force all capabilities into each window’s termcap.
 -A -[r|R]        # Adapt all windows to the new display width & height.
@@ -96,7 +96,7 @@ Ctrl-a + X       # Close active split
 -x               # Attach to a not detached screen. (Multi display mode).
 -X               # Execute as a screen command in the specified session.
 ```
-##### Shortcut keys
+#### Shortcut keys
 ```
 Ctrl-a + c        # Create a new window.
 Ctrl-a + "        # Window selector
@@ -114,14 +114,14 @@ Ctrl-a + d        # Detach a screen session without stopping it.
 Ctrl-a + r        # Reattach a detached screen session.
 Ctrl-a + <ESC>    # Start the copy mode.
 ```
-## tmux (alternative to screen)
-### [cheatsheet](https://tmuxcheatsheet.com/)
-## Local Development
-### micromamba
+# tmux (alternative to screen)
+## [cheatsheet](https://tmuxcheatsheet.com/)
+# Local Development
+## micromamba
 Micromamba is a standalone version of Mamba which is an alternative to Conda. Refer to the installation instructions [here](https://mamba.readthedocs.io/en/latest/installation/micromamba-installation.html).
-### `python -m venv` Wrapper
+## `python -m venv` Wrapper
 This wrapper script simplifies the usage of `python -m venv` for creating native python virtual environments. This is especially handy if you are using Homebrew on MacOS since, by default, Homebrew disallows the usage of pip in the global environment.
-#### Wrapper Script
+### Wrapper Script
 Add the following to your `.zshrc` or `.bashrc`:
 ```
 # Usage
@@ -184,16 +184,16 @@ rmvenv() {
 }
 ```
 Make sure to run `source ~/.bashrc` or `source ~/.zshrc` after adding the script.
-## UMass SCI Cluster
+# UMass SCI Cluster
 Please refer to the [getting started page](https://hpc.umassmed.edu/doc/index.php?title=Getting_started) on the HPC wiki at `hpc.umassmed.edu`. Make sure that you are connected to the UMMS network (on-premises) or [[VPN|Getting Started#computing-access##vpn-setup]].
-### Useful bash aliases
+## Useful bash aliases
 Add the following to you bashrc.
 ```
 alias gpu='bsub -q gpu -gpu "num=1:gmodel=TeslaV100_SXM2_32GB" -W 1440 -n 10 -R "rusage[mem=8000]" -R "span[hosts=1]" -Is bash'
 alias cpu='bsub -q interactive -n 10 -R "rusage[mem=8000]" -R "span[hosts=1]" -Is bash'
 ```
 Run `source ~/.bashrc`. Now, by running `gpu` or `cpu` in the terminal, you can now reserve a gpu and cpu for 24 hours and start an interactive bash shell.
-### Monitor GPU usage
+## Monitor GPU usage
 Say you are running a gpu intensive program. If you want to make sure you program is still running based on the gpu usage, you can run `watch -n 1 nvidia-smi` in the terminal. You should see something like this:
 ```
 Thu Dec 19 15:04:21 2024
