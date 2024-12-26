@@ -2,8 +2,9 @@
 title: Getting Started
 subtitle: Onboarding tutorials for new lab members
 authors:
-  - name: Christian S. Ramirez
   - name: Greg Andrews
+  - name: Christian S. Ramirez
+    email: christian.ramirez1@umassmed.edu
 ---
 # Computing Access
 
@@ -21,7 +22,7 @@ If on windows, you will have to install [WSL](https://learn.microsoft.com/en-us/
 [WSL basic commands](https://learn.microsoft.com/en-us/windows/wsl/basic-commands)
 
 From your powershell start your linux VM with:
-```
+```bash
 wsl.exe -d ubuntu
 ```
 ## Update ssh config file
@@ -56,7 +57,9 @@ Host z010 z011 z012 z013 z014
      User USERNAME
 ```
 ## Logging in
-`ssh USERNAME@bastion.wenglab.org`
+```bash
+ssh USERNAME@bastion.wenglab.org
+```
 
 If it's your first time, you will be prompted to scan the QR code with any two-factor authentication app. You should also be prompted to change your password. 
 ```{important}
@@ -67,7 +70,7 @@ I personally recommend using Microsoft Authenticator, since this is the 2FA app 
 From this point forward, every time you login, you will provide your password + two-factor code with no spaces.
 ```
 From bastion, you can then `ssh` into any of the ZLab servers:
-```
+```bash
 ssh HOSTNAME
 ```
 Replace `HOSTNAME` with one of the hostnames defined in your ssh config file (i.e. z011, z012 ... z014).
@@ -76,7 +79,7 @@ Replace `HOSTNAME` with one of the hostnames defined in your ssh config file (i.
 ## Install conda
 Conda is a great way to quickly install software and create separate environments for projects requiring different, and potentially conflicting, pieces of software. The conda (Miniforge3) installation instructions have been adapted from default installation instructions so it is available across all our machines.
 
-```
+```bash
 curl -L -O "https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-$(uname)-$(uname -m).sh"
 bash Miniforge3-$(uname)-$(uname -m).sh -p /zata/zippy/$(whoami)/Miniforge3
 source ~/.bashrc
@@ -86,7 +89,7 @@ source ~/.bashrc
 While this is optional, you may want to use the `mamba` dependency resolver which tends to be faster than native `conda`. You can still use conda if you are prefer, but in the following examples will use `mamba`. You may need to run `mamba init` if this is your first time using `mamba` and then update your bashrc file with `source ~/.bashrc`.
 
 Create your first conda environment:
-```
+```bash
 mamba create -n myenv jupyterlab numpy pandas matplotlib bedtools
 ```
 ## Singularity
@@ -97,12 +100,12 @@ Containers are useful in bioinformatics because they ensure reproducibility by p
 The remote docker image `clarity001/bioinformatics` contains a full suite of bioinformatics software that you will most likely need.
 
 Create the destination folder and build the singularity sandbox container:
-```
+```bash
 mkdir -p /zata/zippy/$(whoami)/bin/
 singularity build --sandbox /zata/zippy/$(whoami)/bin/bioinformatics docker://clarity001/bioinformatics
 ```
 To start an interactive shell in the *writable* container (optional):
-```
+```bash
 singularity shell --writable -B /data,/zata /zata/zippy/$(whoami)/bin/bioinformatics
 ```
 # JupyterLab
@@ -113,21 +116,21 @@ In the following examples:
 
 ## Start a JupyterLab server using singularity
 Using the sandbox container you just built, start the JupyterLab server with the following command:
-```
+```bash
 singularity exec --writable -B /data,/zata /zata/zippy/$(whoami)/bin/bioinformatics jupyter lab --port=8888 --ip=HOSTNAME --no-browser --notebook-dir=/data/GROUP/$(whoami)
 ```
 ## Start a JupyterLab server using docker
 First see [rootless docker setup](rootless_docker_setup)
-```
+```bash
 docker container run -it --rm -p 8888:8888 --mount type=bind,src=/data,target=/data --mount type=bind,src=/zata,target=/zata clarity001/bioinformatics jupyter-lab --port=8888 --ip=* --no-browser --allow-root --notebook-dir=/data/GROUP/$(whoami)/
 ```
 ## Start a JupyterLab server in a conda environment
 Activate your environment from the previous example:
-```
+```bash
 conda activate myenv
 ```
 Start your jupyterlab server:
-```
+```bash
 jupyter-lab --port=8888 --ip=HOSTNAME --no-browser
 ```
 ## Accessing your JupyterLab server
@@ -148,15 +151,15 @@ You can then open your notebook server in your favorite web browser by navigatin
 ## Common issues with JupyterLab
 ### Unable to delete files
 This is an issue that has come up before. To fix, you first need to find you jupyter config file. It will most likely be located at `/home/USERNAME/.jupyter`. First, change into that directory:
-```
+```bash
 cd /home/$(whoami)/.jupyter
 ```
 If you cannot find `jupyter_server_config.py` in that directory, run:
-```
+```bash
 jupyter server --generate-config
 ```
 Edit `jupyter_server_config.py` with your preferred text editor:
-```
+```bash
 vim jupyter_server_config.py
 ```
 Look for the config option `c.FileContentsManager.delete_to_trash`. If it is set to `True`, change it to `False`. Now you should be able to delete files in JupyterLab
@@ -165,7 +168,7 @@ Look for the config option `c.FileContentsManager.delete_to_trash`. If it is set
 ## Why use rootless Docker?
 Rootless Docker enables users to run containers without administrator privileges, making it ideal for shared HPC environments where granting root access to multiple users would pose security risks.
 ## Setup
-```
+```bash
 mkdir -p ~/.config/docker/
 echo '{"data-root":"/rootless/docker/'$(whoami)'/docker"}' > ~/.config/docker/daemon.json
 dockerd-rootless-setuptool.sh install

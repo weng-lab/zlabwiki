@@ -1,7 +1,9 @@
 ---
 title: Learning Resources
 subtitle: Curated collection of bioinformatics learning materials 
-author: Christian S. Ramirez
+authors:
+  - name: Christian S. Ramirez
+    email: christian.ramirez1@umassmed.edu
 ---
 # Foundation Skills 
 ## Programming Essentials (Python)
@@ -110,4 +112,4 @@ project_name/
     ├── scripts/              # Workflow-specific scripts
     └── logs/                 # Log files
 ```
-This is not an absolute standard to follow by any means. The above directory tree is meant more as a guideline for how to approach project organization.
+This is not an absolute standard to follow. The above directory tree is meant more as a guideline for how to approach project organization.

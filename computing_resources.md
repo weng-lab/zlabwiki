@@ -1,21 +1,23 @@
 ---
 title: Computing Resources
 subtitle: Technical guides for commonly used software tools
-author: Christian S. Ramirez
+authors:
+  - name: Christian S. Ramirez
+    email: christian.ramirez1@umassmed.edu
 ---
 # Secure Jupyter
 ## Why?
 HTTPS encrypts data between your browser and JupyterLab to prevent eavesdropping/tampering, while password authentication ensures only authorized users can access your notebooks and execute code on your system.
 ## Setting up your HTTPS and `jupyter_server_config.py`
 ### Make jupyter password and `certfile` directory
-```
+```bash
 mkdir -p ~/.jupyter/certfiles
 jupyter lab --generate-config
 jupyter lab password 
 ```
 ### Create your private (.key) and public key (.pem)
 Make sure to replace `HOSTNAME` with the machine you are on (i.e. z014).
-```
+```bash
 openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
   -keyout ~/.jupyter/certfiles/jupyter.key \
   -out ~/.jupyter/certfiles/jupyter.pem \
@@ -24,7 +26,7 @@ chmod 600 ~/.jupyter/certfiles/jupyter.key
 ```
 ### Add config options to your `jupyter_server_conifg.py`
 Make sure to replace `HOSTNAME` with the machine you are on (i.e. z014) and `USERNAME` with your username.
-```
+```python
 c.ServerApp.certfile = '/Users/USERNAME/.jupyter/certfiles/jupyter.pem'
 c.ServerApp.keyfile = '/Users/USERNAME/.jupyter/certfiles/jupyter.key'
 c.ServerApp.ip = 'HOSTNAME'
@@ -37,11 +39,11 @@ c.ServerApp.notebook_dir = '/data/GROUP/USERNAME'
 Now start jupyter lab using your preferred method. [See Getting Started](getting_started.md) if you are unsure. Navigate to `https://127.0.0.1:8888/lab`. If this is you first time doing this, your browser may return a self-signed certificate warning. Ignore this error, and connect to the url. Now you can login using the password you made at the beginning.
 
 Defining our config options in `jupyter_server_config.py` allows you be less declarative when starting jupyter in the terminal. For example, when using singularity we can start jupyter lab with:
-```
+```bash
 singularity exec --writable -B /data,/zata /zata/zippy/$(whoami)/bin/bioinformatics jupyter lab
 ```
 As opposed to:
-```
+```bash
 singularity exec --writable -B /data,/zata /zata/zippy/$(whoami)/bin/bioinformatics jupyter lab --port=8888 --ip=HOSTNAME --no-browser --notebook-dir=/data/GROUP/$(whoami)
 ```
 # Screen
@@ -123,7 +125,7 @@ Micromamba is a standalone version of Mamba which is an alternative to Conda. Re
 This wrapper script simplifies the usage of `python -m venv` for creating native python virtual environments. This is especially handy if you are using Homebrew on MacOS since, by default, Homebrew disallows the usage of pip in the global environment.
 ### Wrapper Script
 Add the following to your `.zshrc` or `.bashrc`:
-```
+```bash
 # Usage
 # $ mkvenv myvirtualenv            # creates venv with default python3
 # $ mkvenv myvirtualenv 3.8        # creates venv with python3.8
@@ -188,7 +190,7 @@ Make sure to run `source ~/.bashrc` or `source ~/.zshrc` after adding the script
 Please refer to the [getting started page](https://hpc.umassmed.edu/doc/index.php?title=Getting_started) on the HPC wiki at `hpc.umassmed.edu`. Make sure that you are connected to the UMMS network (on-premises) or [[VPN|Getting Started#computing-access##vpn-setup]].
 ## Useful bash aliases
 Add the following to you bashrc.
-```
+```bash
 alias gpu='bsub -q gpu -gpu "num=1:gmodel=TeslaV100_SXM2_32GB" -W 1440 -n 10 -R "rusage[mem=8000]" -R "span[hosts=1]" -Is bash'
 alias cpu='bsub -q interactive -n 10 -R "rusage[mem=8000]" -R "span[hosts=1]" -Is bash'
 ```
