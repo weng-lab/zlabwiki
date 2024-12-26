@@ -13,6 +13,7 @@ If you are on Mac, I prefer to user [iTerm2](https://iterm2.com/) as opposed to 
 
 Make sure to change your key bindings to natural language processing.
 
+(vpn_setup)=
 ## VPN Setup
 Refer to instructions [here](https://umassmed.sharepoint.com/sites/information-technology/SitePages/VPN-Connect.aspx) (note: you will need to login to you umassmed.edu microsoft account).
 

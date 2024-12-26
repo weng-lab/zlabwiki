@@ -187,7 +187,7 @@ rmvenv() {
 ```
 Make sure to run `source ~/.bashrc` or `source ~/.zshrc` after adding the script.
 # UMass SCI Cluster
-Please refer to the [getting started page](https://hpc.umassmed.edu/doc/index.php?title=Getting_started) on the HPC wiki at `hpc.umassmed.edu`. Make sure that you are connected to the UMMS network (on-premises) or [[VPN|Getting Started#computing-access##vpn-setup]].
+Please refer to the [getting started page](https://hpc.umassmed.edu/doc/index.php?title=Getting_started) on the HPC wiki at `hpc.umassmed.edu`. Make sure that you are connected to the UMMS network (on-premises) or [VPN](getting_stated.md#vpn_setup).
 ## Useful bash aliases
 Add the following to you bashrc.
 ```bash
