@@ -187,7 +187,7 @@ rmvenv() {
 ```
 Make sure to run `source ~/.bashrc` or `source ~/.zshrc` after adding the script.
 # UMass SCI Cluster
-Please refer to the [getting started page](https://hpc.umassmed.edu/doc/index.php?title=Getting_started) on the HPC wiki at `hpc.umassmed.edu`. Make sure that you are connected to the UMMS network (on-premises) or [VPN](getting_stated.md#vpn_setup).
+Please refer to the [getting started page](https://hpc.umassmed.edu/doc/index.php?title=Getting_started) on the HPC wiki at `hpc.umassmed.edu`. Make sure that you are connected to the UMMS network (on-premises) or {doc}`VPN <getting_started#vpn_setup>`
 ## Useful bash aliases
 Add the following to you bashrc.
 ```bash
@@ -197,7 +197,9 @@ alias cpu='bsub -q interactive -n 10 -R "rusage[mem=8000]" -R "span[hosts=1]" -I
 Run `source ~/.bashrc`. Now, by running `gpu` or `cpu` in the terminal, you can now reserve a gpu and cpu for 24 hours and start an interactive bash shell.
 ## Monitor GPU usage
 Say you are running a gpu intensive program. If you want to make sure you program is still running based on the gpu usage, you can run `watch -n 1 nvidia-smi` in the terminal. You should see something like this:
-```
+```{code}
+:linenos:
+:emphasize-lines: 10
 Thu Dec 19 15:04:21 2024
 +-----------------------------------------------------------------------------------------+
 | NVIDIA-SMI 565.57.01              Driver Version: 565.57.01      CUDA Version: 12.7     |

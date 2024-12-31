@@ -8,13 +8,46 @@ authors:
 # Foundation Skills 
 ## Programming Essentials (Python)
 While there are many ways to go about this, here are some suggestions on how to get with started with python.
-* [Exercism](https://exercism.org/tracks/python) is a website that teaches programming languages in an "learn-by-example" manner. By enrolling in their python language tracks, you gain access to a library of exercises which teach basic python concepts. The exercises eventually become more challenging, requiring you to synthesize a solution to a specific coding problem from all previous concepts you've learnt. 
+> [Exercism](https://exercism.org/tracks/python) is a website that teaches programming languages in an "learn-by-example" manner. By enrolling in their python language tracks, you gain access to a library of exercises which teach basic python concepts. The exercises eventually become more challenging, requiring you to synthesize a solution to a specific coding problem from all previous concepts you've learnt. 
 
 Once you have a handle on the basics, I strongly advise moving on to learning specific python libraries (i.e. numpy, pandas, tensorflow, pytorch, etc). While continuing to gain proficiency in python itself is good, most of the work in our lab will exclusively involve certain libraries which have their own learning curves.
-* [DataCamp](https://app.datacamp.com/) is a great place to start learning these libraries (ask Zhiping for access), but as before -- chose whatever learning material best suits you!
+> [DataCamp](https://app.datacamp.com/) is a great place to start learning these libraries (ask Zhiping for access), but as before -- chose whatever learning material best suits you!
 ## Command Line Basics
 First start with learning the basics of Linux [here](https://linuxjourney.com/). I suggest only completing the "Grasshopper" courses, as these cover most of what you need to know. After you've gotten a good grasp of the basics, then move on to learning bash scripting [here](https://exercism.org/tracks/bash). While bash scripting is useful, know when to grab for fully-featured programming language as you requirements become more complex.
-* [Bash Cheatsheet](https://devhints.io/bash)
+> [Bash Cheatsheet](https://devhints.io/bash)
+## CLI Text Editor
+Sometime you may need to quickly edit a config file or make changes to you .bashrc file. In these cases, the quickest way is almost always to use a CLI text editor. 
+### `vim`
+`vim` has more functionality and configurability. However, it notoriously has a steep learning curve. Here is [a good tutorial](https://github.com/iggredible/Learn-Vim/blob/master/ch00_read_this_first.md) if you are interested.
+### A Quick `vim` Tutorial
+#### Basic Navigation
+- `h/j/k/l` - Move cursor left/down/up/right 
+- `w/b` - Jump forward/backward by word
+- `0/$` - Move to start/end of line
+- `gg/G` - Go to first/last line
+#### Modes
+- `i` - Enter insert mode before cursor
+- `a` - Enter insert mode after cursor
+- `ESC` or `CTRL+[` - Return to normal mode
+- `v` - Enter visual mode for selection
+#### Essential Commands
+- `:w` - Save file
+- `:q` - Quit (`:q!` to force quit without saving)
+- `:wq` - Save and quit
+- `u` - Undo
+- `CTRL+r` - Redo
+- `dd` - Delete line
+- `yy` - Copy line
+- `p` - Paste after cursor
+#### Text Operations
+- `x` - Delete character
+- `dw` - Delete word
+- `cw` - Change word
+- `/pattern` - Search forward
+- `n/N` - Next/previous search result
+- `:%s/old/new/g` - Replace all occurrences
+
+You can find a more in-depth tutorial [here](https://github.com/iggredible/Learn-Vim/blob/master/ch00_read_this_first.md) if you are interested.
 ## Version Control
 ### Git
 The official Git documentation includes a tutorial [here](https://git-scm.com/docs/gittutorial).

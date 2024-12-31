@@ -76,6 +76,50 @@ ssh HOSTNAME
 ```
 Replace `HOSTNAME` with one of the hostnames defined in your ssh config file (i.e. z011, z012 ... z014).
 
+# SSH
+
+## Fixing double loging issue
+As you may have noticed, you needed to enter your password + 2FA twice!
+
+This is because you are logging-in twice, effectively:
+1. bastion server
+2. internal server (i.e. z011, z012 ... z014)
+
+The `sshd_config` on the bastion server, unfortunately does not have `PubkeyAuthentication` enabled. However, we can enable it on the internal server!
+
+### Generate key pair
+On your client machine, run `ssh-keygen`. Give the identity file pair a custom name (e.g. 'zervers'). Do not set a passphrase for the key file. 
+```bash
+ssh-keygen -t ed25519 -a 100
+```
+
+### Send public key file to internal server
+```bash
+ssh-copy-id -i ~/.ssh/zervers USERNAME@HOSTNAME 
+```
+This adds your public key to the `~/.ssh/authorized_users` file on the remote machine.
+
+### Edit your ssh config
+On you client machine edit the ssh config file.
+```bash
+vim ~/.ssh/config
+```
+Add the following line to the indicated host in your ssh_config file.
+```bash
+Host z010 z011 z012 z013 z014
+    # previous config options ...
+    IdentityFile ~/.ssh/zervers
+```
+
+### Test it out!
+Now when you log in to the zervers, you should only have to login **once**!
+```bash
+ssh HOSTNAME
+```
+```{note}
+If you access multiple machines on the internal network frequently (i.e. z014 & z010), you will have to repeat this process for each machine.
+```
+
 # Installing Software
 ## Install conda
 Conda is a great way to quickly install software and create separate environments for projects requiring different, and potentially conflicting, pieces of software. The conda (Miniforge3) installation instructions have been adapted from default installation instructions so it is available across all our machines.
@@ -134,6 +178,41 @@ Start your jupyterlab server:
 ```bash
 jupyter-lab --port=8888 --ip=HOSTNAME --no-browser
 ```
+# VSCode
+
+If you want a more fully-featured IDE, here is how you can setup a remote vscode server instance on the zervers.
+
+## Clone docker repository
+In `zata/zippy` run
+```bash
+mkdir -p ~/.config/code-server/config
+git clone https://github.com/christian728504/docker.git
+cd docker/bioinformatics/code-server
+```
+
+## Inspect dockerfile (optional)
+At this stage, I encourage you to look at the `dockerfile` and understand what is being installed on the container. In my experience, this docker image contains all the bioinformatics dependencies you could need. 
+
+```{note}
+If there are certain dependencies that you expect to use which aren't specified in the `dockerfile`, edit it to suite your use case. By default, the `docker-compose.yml` file pulls from a remote image based on the `dockerfile`. You will need to update this if behavior in the `docker-compose.yml` if you plan on making changes to the dockerfile. Simply uncomment `build: .` and comment out `image: clarity001/bioinformatics:code-server`.
+```
+```{important}
+If you do install any packages during runtime, remember **they are not persistent**!
+```
+
+## Run docker compose
+Now run docker compose in the directory with the `docker-compose.yml` file and inspect the logs.
+
+```bash
+docker compose up -d
+docker compose logs code-server
+```
+
+Your are looking for an output like this
+```
+
+```
+
 ## Accessing your JupyterLab server
 Access the notebook server from another terminal on your computer with `ssh -N -L 8888:HOSTNAME:8888 USERNAME@HOSTNAME`.
 
