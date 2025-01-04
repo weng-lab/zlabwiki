@@ -117,7 +117,7 @@ ssh HOSTNAME
 
 # SSH
 
-## Fixing double loging issue
+## Fixing double login issue
 As you may have noticed, you needed to enter your password + 2FA twice!
 
 This is because you are logging-in twice
@@ -160,6 +160,14 @@ If you access multiple machines on the internal network frequently (e.g. z014 & 
 ```
 
 # Installing Software
+
+## Enviornment management
+### Virtual environments
+Typically, a collection of dependencies (could be language specific) that ensure the application or program of interest runs in isolation from global, system dependencies. In bioinformatics applciations, conda is a widely-used virtual environment manager and dependency resolver.
+
+### Containers
+A different technology altogether, 'containerization' isolates the application or program of interest in a virtual process. This method usually offers a higher level of abstraction/isolation, in which each virtual process can have its own space, file system, network space, etc. Two widely-used programs for containerization are docker and singularity.
+
 ## `conda`
 Conda is a great way to quickly install software and create separate environments for projects requiring different, and potentially conflicting, pieces of software. The conda (Miniforge3) installation instructions have been adapted from default installation instructions so it is available across all our machines.
 
@@ -308,6 +316,9 @@ From the logs, you'll want to note a couple of things
 When you go to the github link, you should be prompted to authenticate with the 8 character code.
 
 Now, go to the VSCode IDE on your client machine and open the command palette with `CMD + SHIFT + P` (macos) and type `Remote-Tunnels: Connect to Tunnel`. Select the Github authentication option. Wait a bit, and you should see one remote resource "online." Once you've added the remote connection and opened a remote directory, you should be all set!
+
+## Reconnecting tunnel
+After you close VSCode, the tunnel will automatically close. However, the server will still be running on the remote machine. To reconnect the tunnel, you will need to `ssh` back into that machine.
 
 ## Usage of jupyter notebooks and kernels
 If you want to make use of jupyter notebooks, you'll need to install the `Jupyter` extension (on both local and remote machine). After this you should be able to select from the available kernels (python, bash or R).
