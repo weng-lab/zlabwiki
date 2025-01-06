@@ -13,7 +13,7 @@ python ^3.13
 ### Installation
 1. Clone the repository:
 ```bash
-git clone https://github.com/christian728504/zlabwiki.git
+git clone https://github.com/weng-lab/zlabwiki.git
 cd zlabwiki
 ```
 
@@ -88,12 +88,12 @@ Our repository is configured with automated deployment pipelines:
 - Deploy status can be monitored in the repository's Actions tab
 
 ## License
-This project is licensed under the [MIT License](https://github.com/christian728504/zlabwiki/blob/main/LICENSE).
+This project is licensed under the [MIT License](https://github.com/weng-lab/zlabwiki/blob/main/LICENSE).
 
 ## Contact
 - Project Maintainer: Christian Samuel Ramirez
 - Email: [christian.ramirez1@umassmed.edu](mailto:christian.ramirez1@umassmed.edu)
-- Project Link: https://github.com/christian728504/zlabwiki
+- Project Link: https://github.com/weng-lab/zlabwiki
 
 ## Acknowledgments
 - [Greg Andrews](https://github.com/grandrews7)
