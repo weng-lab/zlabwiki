@@ -174,7 +174,7 @@ While this is optional, you may want to use the `mamba` dependency resolver whic
 
 Create your first conda environment:
 ```bash
-mamba create -n myenv jupyterlab numpy pandas matplotlib bedtools
+mamba create -n myenv jupyterlab numpy pandas matplotlib bedtools -c bioconda
 ```
 ## `singularity`
 
@@ -184,7 +184,7 @@ The remote docker image `clarity001/bioinformatics` contains a full suite of bio
 Create the destination folder and build the singularity sandbox container:
 ```bash
 mkdir -p /zata/zippy/$(whoami)/bin/
-singularity build --sandbox /zata/zippy/$(whoami)/bin/bioinformatics docker://clarity001/bioinformatics
+singularity build --sandbox /zata/zippy/$(whoami)/bin/bioinformatics docker://clarity001/bioinformatics:latest
 ```
 To start an interactive shell in the *writable* container (optional):
 ```bash
@@ -213,7 +213,7 @@ singularity exec --writable -B /data,/zata /zata/zippy/$(whoami)/bin/bioinformat
 
 ## Start a JupyterLab server using docker
 ```bash
-docker container run -it --rm -p 8888:8888 --mount type=bind,src=/data,target=/data --mount type=bind,src=/zata,target=/zata clarity001/bioinformatics jupyter-lab --port=8888 --ip=* --no-browser --allow-root --notebook-dir=/data/GROUP/$(whoami)/
+docker container run -it --rm -p 8888:8888 --mount type=bind,src=/data,target=/data --mount type=bind,src=/zata,target=/zata clarity001/bioinformatics:latest jupyter-lab --port=8888 --ip=* --no-browser --allow-root --notebook-dir=/data/GROUP/$(whoami)/
 ```
 
 ## Start a JupyterLab server in a conda environment
