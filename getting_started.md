@@ -297,6 +297,47 @@ USERNAME@HOSTNAME    # Username and server address to login to
 ```
 You can then open your notebook server in your favorite web browser by navigating to http://127.0.0.1:8888/lab.
 
+````{dropdown} Optional
+## Configuring JupyterLab for HTTPS
+### Make jupyter password and `certfile` directory
+```bash
+mkdir -p ~/.jupyter/certfiles
+jupyter lab --generate-config
+jupyter lab password 
+```
+### Create your private (.key) and public key (.pem)
+Make sure to replace `HOSTNAME` with the machine you are on (i.e. z014).
+```bash
+openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
+  -keyout ~/.jupyter/certfiles/jupyter.key \
+  -out ~/.jupyter/certfiles/jupyter.pem \
+  -subj "/CN=HOSTNAME"
+chmod 600 ~/.jupyter/certfiles/jupyter.key
+```
+### Add config options to your `jupyter_server_conifg.py`
+Make sure to replace `HOSTNAME` with the machine you are on (i.e. z014) and `USERNAME` with your username.
+```python
+c.ServerApp.certfile = '/Users/USERNAME/.jupyter/certfiles/jupyter.pem'
+c.ServerApp.keyfile = '/Users/USERNAME/.jupyter/certfiles/jupyter.key'
+c.ServerApp.ip = 'HOSTNAME'
+c.ServerApp.port = 8888
+c.ServerApp.allow_remote_access = True
+c.ServerApp.password_required = True
+c.ServerApp.config_file = '/Users/USERNAME/.jupyter/jupyter_server_config.json'
+c.ServerApp.notebook_dir = '/data/GROUP/USERNAME'
+```
+Now start jupyter lab using your preferred method. [See Getting Started](getting_started.md) if you are unsure. Navigate to `https://127.0.0.1:8888/lab`. If this is you first time doing this, your browser may return a self-signed certificate warning. Ignore this error, and connect to the url. Now you can login using the password you made at the beginning.
+
+Defining our config options in `jupyter_server_config.py` allows you be less declarative when starting jupyter in the terminal. For example, when using singularity we can start jupyter lab with:
+```bash
+singularity exec --writable -B /data,/zata /zata/zippy/$(whoami)/bin/bioinformatics jupyter lab
+```
+As opposed to:
+```bash
+singularity exec --writable -B /data,/zata /zata/zippy/$(whoami)/bin/bioinformatics jupyter lab --port=8888 --ip=HOSTNAME --no-browser --notebook-dir=/data/GROUP/$(whoami)
+```
+````
+
 ## Common issues with JupyterLab
 ### Unable to delete files
 This is an issue that has come up before. To fix, you first need to find you jupyter config file. It will most likely be located at `/home/USERNAME/.jupyter`. First, change into that directory:
