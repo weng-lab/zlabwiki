@@ -36,7 +36,7 @@ vim ~/.config/ghostty/config
 There are *_many_* settings you can adjust in this config file, all of which you read up on in the [documentation](https://ghostty.org/docs/docs).
 
 Here's my config
-```{code}
+```{code} python
 :filename: ~/.config/ghostty/config
 :linenos:
 theme = Monokai Remastered
@@ -49,7 +49,7 @@ window-padding-balance = true
 ```
 
 #### SSH config env variable
-For ssh to work on ghostty, you need to add this to every host in your `~/.ssh/config` file which will be discussed [later](ssh_config_file)
+For ssh to work on ghostty, you need to add this to every host in your `~/.ssh/config` file which will be discussed [later](#ssh_config_file)
 ```
 SetEnv TERM=xterm-256color
 ```
@@ -121,6 +121,35 @@ mkdir -p ~/.ssh/sockets
 ```bash
 ssh USERNAME@bastion.wenglab.org
 ```
+````{dropdown} Diectory Structure
+```mermaid
+graph TD
+    root["/"] --> boot["/boot"]
+    root --> efi["/boot/efi"]
+    root --> home["/home"]
+    root --> tank["/tank"]
+    root --> zata["/zata"]
+    
+    tank --> tank_home["/tank/home"]
+    tank_home --> dedicated["Dedicated User Mounts"]
+    
+    home --> shared_users["Regular Directory Users"]
+    home --> mounted_users["ZFS Dataset Users"]
+    
+    zata --> data["Ceph: data (4.1P)"]
+    zata --> zippy["Ceph: zippy (259T)"]
+    zata --> public["Ceph: public_html (450T)"]
+    
+    root --> tmp["/tmp"]
+    root --> run["/run tmpfs"]
+    root --> dev_shm["/dev/shm tmpfs"]
+
+    classDef network fill:#f9f,stroke:#333,stroke-width:2px
+    classDef local fill:#bbf,stroke:#333,stroke-width:2px
+    class data,zippy,public network
+    class tmp,run,dev_shm,boot,efi local
+```
+````
 
 If it's your first time, you will be prompted to scan the QR code with any two-factor authentication app. You should also be prompted to change your password. 
 ```{important}
@@ -133,6 +162,11 @@ From this point forward, every time you login, you will promted toprovide your p
 From bastion, you can then `ssh` into any of the ZLab servers:
 ```bash
 ssh HOSTNAME
+```
+
+## Server Usage Guidelines
+```{important}
+Please read the [server usage guidelines](https://docs.google.com/document/d/1X3gSpfv0avT3M3pN5HDbY3Etal_is9be-B6wJ4DJ7Fw/edit?usp=sharing) before using any of the servers.
 ```
 
 # SSH
@@ -242,11 +276,11 @@ The remote docker image `clarity001/bioinformatics` contains a full suite of bio
 Create the destination folder and build the singularity sandbox container:
 ```bash
 mkdir -p /zata/zippy/$(whoami)/bin/
-singularity build --sandbox /zata/zippy/$(whoami)/bin/bioinformatics docker://clarity001/bioinformatics:latest
+singularity build /zata/zippy/$(whoami)/bin/bioinformatics.sif docker://clarity001/bioinformatics:latest
 ```
-To start an interactive shell in the *writable* container (optional):
+To start an interactive shell in the container (optional):
 ```bash
-singularity shell --writable -B /data,/zata /zata/zippy/$(whoami)/bin/bioinformatics
+singularity shell -B /data,/zata /zata/zippy/$(whoami)/bin/bioinformatics.sif
 ```
 
 (rootless_docker_setup)=
@@ -269,7 +303,7 @@ dockerd-rootless-setuptool.sh install
 ## Start a JupyterLab server using singularity
 Using the sandbox container you just built, start the JupyterLab server with the following command:
 ```bash
-singularity exec --writable -B /data,/zata /zata/zippy/$(whoami)/bin/bioinformatics jupyter lab --port=8888 --ip=HOSTNAME --no-browser --notebook-dir=/data/GROUP/$(whoami)
+singularity exec -B /data,/zata /zata/zippy/$(whoami)/bin/bioinformatics.sif jupyter lab --port=8888 --ip=HOSTNAME --no-browser --notebook-dir=/data/GROUP/$(whoami)
 ```
 
 ## Start a JupyterLab server in a conda environment
@@ -290,7 +324,7 @@ If you are curious, this is what the previous command is doing:
 ssh                  # The secure shell program that creates encrypted connections
 -N                   # Flag that means "don't execute a remote command/shell" - just forward ports
 -L                   # Flag for "local port forwarding"
-8888:                # The local port on your computer
+8888:                # The local port on your compute
 HOSTNAME:            # The destination server's address (check your ssh config for available hosts)
 8888                 # The remote port on the destination server
 USERNAME@HOSTNAME    # Username and server address to login to
@@ -330,11 +364,11 @@ Now start jupyter lab using your preferred method. [See Getting Started](getting
 
 Defining our config options in `jupyter_server_config.py` allows you be less declarative when starting jupyter in the terminal. For example, when using singularity we can start jupyter lab with:
 ```bash
-singularity exec --writable -B /data,/zata /zata/zippy/$(whoami)/bin/bioinformatics jupyter lab
+singularity exec -B /data,/zata /zata/zippy/$(whoami)/bin/bioinformatics.sif jupyter lab
 ```
 As opposed to:
 ```bash
-singularity exec --writable -B /data,/zata /zata/zippy/$(whoami)/bin/bioinformatics jupyter lab --port=8888 --ip=HOSTNAME --no-browser --notebook-dir=/data/GROUP/$(whoami)
+singularity exec -B /data,/zata /zata/zippy/$(whoami)/bin/bioinformatics.sif jupyter lab --port=8888 --ip=HOSTNAME --no-browser --notebook-dir=/data/GROUP/$(whoami)
 ```
 ````
 
