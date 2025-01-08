@@ -18,13 +18,14 @@ This page is meant to be read in sequential order.
 
 ## Terminal Emulators
 
-### iTerm2 (macos)
+### iTerm2 (macOS)
 [iTerm2](https://iterm2.com/) supports multiple tabs, is much more customizable, and has many more features compared to the stock terminal.
 
 You can change your key bindings to natural language processing. Open iTerm2 and press `CMD + ,` to bring up the settings page. Navigate to `Preferences -> Profiles -> Keys -> Load Preset ... -> Natural Text Editing`.
 
-### ghostty (macos)
-[ghostty](https://ghostty.org/docs/install/binary) is a relatively new terminal emulator avialable on macos, but it is both performant and highly customizable. However, it requires some extra setup!
+````{dropdown} Optional
+### Ghostty (macOS)
+[ghostty](https://ghostty.org/docs/install/binary) is a relatively new terminal emulator avialable on macOS, but it is both performant and highly customizable. However, it requires some extra setup!
 
 #### ~/.config/ghostty/config
 After install ghostty, you'll need to make a config file
@@ -52,6 +53,7 @@ For ssh to work on ghostty, you need to add this to every host in your `~/.ssh/c
 ```
 SetEnv TERM=xterm-256color
 ```
+````
 
 (vpn_setup)=
 ## VPN Setup
@@ -69,14 +71,26 @@ wsl.exe -d ubuntu
 
 (ssh_config_file)=
 ## Update ssh config file
-Your ssh config file should be placed in `~/.ssh/config`.
+Your ssh config file will be created in `~/.ssh/config`.
 
-If `~/.ssh` directory does not exists, run `mkdir ~/.ssh`.
-
-On a Mac, you can create a blank ssh config file with `touch ~/.ssh/config`, and then open it in TextEdit with `Open -a TextEdit ~/.ssh/config`, then you can just copy and paste the contents below, save and exit.
-
-You will have to make `~/.ssh/sockets` if it does not exist with `mkdir ~/.ssh/sockets`.
+Create `~/.ssh` directory if it does not exist already.
+```bash
+mkdir -p ~/.ssh
 ```
+
+Create a blank ssh config file
+```bash
+touch ~/.ssh/config
+```  
+
+Then open the file in your preferred text editor with 
+```bash
+# For example, on macOS
+open -a TextEdit ~/.ssh/config`
+```
+Add the following to the config file
+```{code} text
+:filename: ~/.ssh/config
 Host *
      TCPKeepAlive = yes
      ServerAliveCountMax = 3
@@ -97,6 +111,12 @@ Host z010 z011 z012 z013 z014
      GSSAPIAuthentication yes
      User USERNAME
 ```
+````{important}
+Create the `~/.ssh/sockets` if it does not exist already.
+```bash
+mkdir -p ~/.ssh/sockets
+```
+```` 
 ## Logging in
 ```bash
 ssh USERNAME@bastion.wenglab.org
@@ -108,7 +128,7 @@ Save this QR code somewhere!
 ```
 I personally recommend using Microsoft Authenticator, since this is the 2FA app used by your UMass Microsoft account. However, it may also be convenient to choose a 2FA app that has a desktop client. 
 ```{important}
-From this point forward, every time you login, you will provide your password + two-factor code with no spaces.
+From this point forward, every time you login, you will promted toprovide your password + two-factor code with no spaces.
 ```
 From bastion, you can then `ssh` into any of the ZLab servers:
 ```bash
@@ -122,14 +142,14 @@ As you may have noticed, you needed to enter your password + 2FA twice!
 
 This is because you are logging-in twice
 1. Once on the bastion server
-2. and another time on the internal server (i.e. z011, z012 ... z014)
+2. and another time to access an internal server (i.e. z011, z012 ... z014)
 
 The `sshd_config` on the bastion server does not have `PubkeyAuthentication` enabled. However, it is enabled on the internal server!
 
 ### Generate key pair
 On your client machine, run `ssh-keygen`. Give the identity file pair a custom name (e.g. 'zervers'). Do not set a passphrase for the key file. 
 ```bash
-ssh-keygen -t ed25519 -a 100
+ssh-keygen -t ed25519 -a 100 -f ~/.ssh/zervers
 ```
 
 ### Send public key file to internal server
@@ -159,17 +179,46 @@ ssh HOSTNAME
 If you access multiple machines on the internal network frequently (e.g. z014 & z010), you will have to repeat this process for each machine.
 ```
 
+## Setting up SSH keys with GitHub
+If you are using GitHub for version control, you can set up SSH keys to authenticate with your GitHub account without having to enter your password every time.
+
+First, generate a new SSH key pair:
+```bash
+ssh-keygen -t ed25519 -a 100 -f ~/.ssh/github
+```
+This will generate a public and private key pair.
+
+Now edit you `~/.ssh/config` file and add the following lines:
+```{code} text
+:filename: ~/.ssh/config
+Host github.com
+    AddKeysToAgent yes
+    UseKeychain yes # macOS only, comment out otherwise
+    IdentityFile ~/.ssh/id_ed25519e
+```
+
+You can then add the public key to your GitHub account by following these steps:
+1. Open your GitHub account settings.
+2. Go to the "SSH and GPG keys" section.
+3. Click on "New SSH key".
+4. Enter a title for your key.
+5. Paste the contents of your public key file into the "Key" field.
+6. Click "Add SSH key".
+
+Test the connection by running `ssh -T git@github.com` and you should see a message indicating that the connection was successful.
+
+Now, you can use the SSH key to log in to your GitHub account without having to enter your password every time.
+
 # Installing Software
 
 ## Enviornment management
 ### Virtual environments
-Typically, a collection of dependencies (could be language specific) that ensure the application or program of interest runs in isolation from global, system dependencies. In bioinformatics applciations, conda is a widely-used virtual environment manager and dependency resolver.
+Typically, a collection of dependencies (could be language specific) that ensure the application or program of interest runs in isolation from global, system dependencies. `conda` is a widely-used in bioinformatics as the defacto virtual environment manager and dependency resolver.
 
 ### Containers
-A different technology altogether, 'containerization' isolates the application or program of interest in a virtual process. This method usually offers a higher level of abstraction/isolation, in which each virtual process can have its own space, file system, network space, etc. Two widely-used programs for containerization are docker and singularity.
+A different technology altogether, 'containerization' isolates the application or program of interest in a virtual process. This method usually offers a higher level of abstraction/isolation, in which each virtual process can have its own space, file system, network space, etc. Two widely-used programs for containerization are `docker` and `singularity`.
 
 ## `conda`
-Conda is a great way to quickly install software and create separate environments for projects requiring different, and potentially conflicting, pieces of software. The conda (Miniforge3) installation instructions have been adapted from default installation instructions so it is available across all our machines.
 
 ```bash
 curl -L -O "https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-$(uname)-$(uname -m).sh"
@@ -184,6 +233,7 @@ Create your first conda environment:
 ```bash
 mamba create -n myenv jupyterlab numpy pandas matplotlib bedtools -c bioconda
 ```
+
 ## `singularity`
 
 ### Build singularity image
@@ -205,6 +255,9 @@ singularity shell --writable -B /data,/zata /zata/zippy/$(whoami)/bin/bioinforma
 Rootless Docker enables users to run containers without administrator privileges. This is the version of docker which you will be configuring.
 
 ### Setup
+```{note}
+The following setup commands are known to not work sometimes. If you encounter issues, reach out to one of the admins on the *_#compute-support_* channel on Slack.
+```
 ```bash
 mkdir -p ~/.config/docker/
 echo '{"data-root":"/rootless/docker/'$(whoami)'/docker"}' > ~/.config/docker/daemon.json
@@ -217,11 +270,6 @@ dockerd-rootless-setuptool.sh install
 Using the sandbox container you just built, start the JupyterLab server with the following command:
 ```bash
 singularity exec --writable -B /data,/zata /zata/zippy/$(whoami)/bin/bioinformatics jupyter lab --port=8888 --ip=HOSTNAME --no-browser --notebook-dir=/data/GROUP/$(whoami)
-```
-
-## Start a JupyterLab server using docker
-```bash
-docker container run -it --rm -p 8888:8888 --mount type=bind,src=/data,target=/data --mount type=bind,src=/zata,target=/zata clarity001/bioinformatics:latest jupyter-lab --port=8888 --ip=* --no-browser --allow-root --notebook-dir=/data/GROUP/$(whoami)/
 ```
 
 ## Start a JupyterLab server in a conda environment
@@ -315,7 +363,7 @@ From the logs, you'll want to note a couple of things
 
 When you go to the github link, you should be prompted to authenticate with the 8 character code.
 
-Now, go to the VSCode IDE on your client machine and open the command palette with `CMD + SHIFT + P` (macos) and type `Remote-Tunnels: Connect to Tunnel`. Select the Github authentication option. Wait a bit, and you should see one remote resource "online." Once you've added the remote connection and opened a remote directory, you should be all set!
+Now, go to the VSCode IDE on your client machine and open the command palette with `CMD + SHIFT + P` (macOS) and type `Remote-Tunnels: Connect to Tunnel`. Select the Github authentication option. Wait a bit, and you should see one remote resource "online." Once you've added the remote connection and opened a remote directory, you should be all set!
 
 ## Reconnecting tunnel
 After you close VSCode, the tunnel will automatically close. However, the server will still be running on the remote machine. To reconnect the tunnel, you will need to `ssh` back into that machine.
