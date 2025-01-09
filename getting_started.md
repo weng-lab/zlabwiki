@@ -123,31 +123,27 @@ ssh USERNAME@bastion.wenglab.org
 ```
 ````{dropdown} Diectory Structure
 ```mermaid
+%%{init: {'theme': 'dark', 'themeVariables': { 'fontFamily': 'arial', 'textColor': '#e0e0e0', 'lineColor': '#e0e0e0' }}}%%
 graph TD
-    root["/"] --> boot["/boot"]
-    root --> efi["/boot/efi"]
-    root --> home["/home"]
-    root --> tank["/tank"]
+    root["/"] --> tank["/tank"]
     root --> zata["/zata"]
+    root --> data["/data"]
     
     tank --> tank_home["/tank/home"]
-    tank_home --> dedicated["Dedicated User Mounts"]
+    tank_home --> regular["Regular Users<br/>(directories in tank/home)"]
+    tank_home --> datasets["ZFS Datasets<br/>(mounted to /home/username)"]
     
-    home --> shared_users["Regular Directory Users"]
-    home --> mounted_users["ZFS Dataset Users"]
+    zata --> zata_data["data (4.1P Ceph)"]
+    zata_data --> zlab["zlab/"]
+    data -.->|bind mount| zlab
     
-    zata --> data["Ceph: data (4.1P)"]
-    zata --> zippy["Ceph: zippy (259T)"]
-    zata --> public["Ceph: public_html (450T)"]
-    
-    root --> tmp["/tmp"]
-    root --> run["/run tmpfs"]
-    root --> dev_shm["/dev/shm tmpfs"]
+    zata --> zippy["zippy (259T Ceph)"]
+    zata --> public["public_html (450T Ceph)"]
 
-    classDef network fill:#f9f,stroke:#333,stroke-width:2px
-    classDef local fill:#bbf,stroke:#333,stroke-width:2px
-    class data,zippy,public network
-    class tmp,run,dev_shm,boot,efi local
+    classDef default stroke:#e0e0e0
+    classDef ceph stroke:#ff88ff,color:#ff88ff
+    
+    class zata,zata_data,zlab,zippy,public ceph
 ```
 ````
 
