@@ -215,6 +215,21 @@ Ctrl-a + <ESC>    # Start the copy mode.
 ## tmux (alternative to screen)
 > Check out this comprehensive [cheatsheet](https://tmuxcheatsheet.com/) to quickly get familiar with tmux.
 
+## Automatically start tmux session on login
+Add the following to your `.bashrc` on the remote server
+```{code} bash
+:filename: ~/.bashrc
+# If using tmux
+if [[ -z $TMUX ]] && [[ -n $SSH_TTY ]]; then
+    exec tmux new-session -A -s SESSION_NAME
+fi
+
+# If using screen
+if [[ -z $STY ]] && [[ -n $SSH_TTY ]]; then
+    exec screen -d -r SESSION_NAME
+fi
+```
+
 # Local Development
 
 ## micromamba

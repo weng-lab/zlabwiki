@@ -272,7 +272,7 @@ The remote docker image `clarity001/bioinformatics` contains a full suite of bio
 Create the destination folder and build the singularity sandbox container:
 ```bash
 mkdir -p /zata/zippy/$(whoami)/bin/
-singularity build /zata/zippy/$(whoami)/bin/bioinformatics.sif docker://clarity001/bioinformatics:latest
+singularity build /zata/zippy/$(whoami)/bin/bioinformatics.sif docker://clarity001/bioinformatics:base
 ```
 To start an interactive shell in the container (optional):
 ```bash
