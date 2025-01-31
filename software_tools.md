@@ -343,6 +343,37 @@ Micromamba is a standalone version of Mamba which is an alternative to Conda. Re
 ## pyenv
 `pyenv` is a tool to manage multiple Python versions. It allows you to easily switch between different Python versions and manage them in a virtual environment. Refer to the installation instructions [here](https://github.com/pyenv/pyenv).
 
+# Setup ollama and open-webui: A step-by-step guide
+
+1. **Install Homebrew**
+   - Follow instructions [here](https://brew.sh/) to install homebrew.
+
+2. **Install Docker Desktop**
+   - If using Homebrew, run the following command to install Docker Desktop:
+     ```bash
+     brew install --cask docker
+     ```
+   - Otherwise, refer to the official [Docker Desktop installation guide](https://docs.docker.com/engine/install/) for your operating system.
+   - If you installed with homebrew, open Docker Desktop.
+   - After opening Docker Desktop, you should see a menu bar icon with the Docker logo. Click on it to make sure Docker Desktop is running.
+   - Now, in your terminal, run `docker run hello-world` to confirm it's running.
+
+3. **Install Ollama**
+   - Download the install Ollama from [here](https://ollama.com/download) according to your operating system.
+
+4. **Run Open WebUI in Docker**
+   - In your terminal, run the provided command to start the container:
+     ```bash
+     docker run -d -p 3000:8080 --add-host=host.docker.internal:host-gateway -v open-webui:/app/backend/data --name open-webui --restart always ghcr.io/Open-WebUI/Open-WebUI:main
+     ```
+   - The container will now be running in the background. You can check its status with `docker ps -a`.
+
+5. **Access Open WebUI**
+   - Once the container is up, visit your local machine's port 3000 to access Open WebUI:
+     ```bash
+     curl http://localhost:3000
+     ```
+
 # SLURM
 SLURM (Simple Linux Utility for Resource Management) is a workload manager and job scheduler for Linux clusters that allows users to submit, manage, and monitor jobs on computing clusters. It handles the allocation of resources (like CPUs, GPUs, and memory) to jobs and manages job queues to ensure fair and efficient utilization of cluster resources.
 
