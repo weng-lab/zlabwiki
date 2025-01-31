@@ -4,6 +4,8 @@ subtitle: Tutorials for commonly used software tools
 authors:
   - name: Christian S. Ramirez
     email: christian.ramirez1@umassmed.edu
+  - name: Ben Kresge
+    email: ben.kresge@umassmed.edu
 ---
 # CLI Text Editor
 Sometime you may need to quickly edit a config file or make changes to you .bashrc file. In these cases, the quickest way is almost always to use a CLI text editor. 
