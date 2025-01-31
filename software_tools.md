@@ -46,6 +46,109 @@ Sometime you may need to quickly edit a config file or make changes to you .bash
 ### Full tutorial
 You can find a more in-depth tutorial [here](https://github.com/iggredible/Learn-Vim/blob/master/ch00_read_this_first.md) if you are interested.
 
+# Globus file transfer
+[Globus](https://www.globus.org/) is a service that allows you to transfer files between "endpoints" (computers).
+
+## Login to the Globus
+
+1. Go to [https://www.globus.org/](https://www.globus.org/) and select **log in**.
+2. Under **use your existing organizational login**, start typing "University of Massachusetts Medical School" and select the item from the dropdown list.
+3. You will be redirected to a **CILogon** page:
+   - Enter your **short form username**. This is the first five characters of your last name, followed by the first letter of your first name, and ends with a number if your email has one. For example, `Ben.Kresge@umassmed.edu` is `kresgb`.
+   - Enter your **umassmed.edu password**.
+4. You will be prompted to authenticate using **2FA (two-factor authentication)**.
+5. On the next screen, you will see an **information release** prompt:
+   - You can choose any option. I chose "Ask me again if information to be provided to this service changes." but ANY should be fine.
+6. Press **accept** to proceed.
+
+After completing these steps, you should land on the main Globus screen titled **file manager**.
+
+## Download Globus endpoint software
+``` {note}
+If you have already installed and set up Globus Connect Personal, you can skip to Step 4 by navigating to your existing installation directory (e.g., `cd globusconnectpersonal-3.2.6`).
+```
+
+1. Once you are logged into the server of your choice, run the following command to download Globus Connect Personal:
+   ```bash
+   wget https://downloads.globus.org/globus-connect-personal/linux/stable/globusconnectpersonal-latest.tgz
+   ```
+2. Extract the file using the following command:
+   ```bash
+   tar xzf globusconnectpersonal-latest.tgz
+   ```
+
+## Create Globus endpoint
+
+1. Navigate to the newly created directory. The directory name should follow the format `globusconnectpersonal-x.y.z` (e.g., `globusconnectpersonal-3.2.6`):
+   ```bash
+   cd globusconnectpersonal-3.2.6
+   ```
+2. Run the following command to set up Globus Connect Personal:
+   ```bash
+   ./globusconnectpersonal -setup
+   ```
+3. You will be prompted to log in via a large URL starting with `https://auth.globus.org`. The prompt will wait for an authentication code:
+   - Follow the link (usually **CTRL/CMD + Left Mouse Click**).
+   - The site will ask for certain permissions. Click **allow**.
+   - The site will display a **native app authorization code**. Copy this code.
+   - Paste the code back into the shell prompt.
+``` {important}
+The code only lasts 10 minutes!
+```
+
+4. Next, the shell prompt will display:
+   ```
+   == starting endpoint setup
+
+   Input a value for the Endpoint Name:
+   ```
+   - You can choose what you want to name the endpoint, but you will need to remember this name later when transferring files.
+   - For example, if you are on `z012`, you might name it `Ben-z012`.
+
+## Start Globus endpoint service
+
+1. After setup is complete, start the Globus Connect Personal service:
+   ```bash
+   ./globusconnectpersonal -start &
+   ```
+   This will run the service in the background.
+   ``` {note}
+   You can confiure whcih folders are accessible by using the --restrict-folders flag (e.g., `--retrict-folders /home/user/data,/home/user/dev`)
+   ```
+
+2. To verify the service is running, you can use:
+   ```bash
+   ./globusconnectpersonal -status
+   ```
+   We expect to see something like
+   ```
+   Globus Online:   connected
+   Transfer Status: idle
+   ```
+
+## Transfer files
+
+1. Return to the Globus web interface at [https://app.globus.org/file-manager](https://app.globus.org/file-manager)
+   - If you are transfering file from a client device (such as a laptop), you will need to first install the Globus endpoint software on the client device [here](https://www.globus.org/globus-connect-personal). Once you've installed the software for your client device's operating system and see the collection appear in the Globus file manger web interface, you can proceed to the next step.
+
+2. In the File Manager:
+   - On the left panel, search for and select your source endpoint (where your files are currently located).
+   - On the right panel, search for and select your destination endpoint (the one you created in Step 3).
+
+3. Navigate to the desired directories:
+   - In the source panel, browse to select the files/folders you want to transfer.
+   - In the destination panel, you will only have access to your home directory on the zerver due to Globus Connect Personal's permission restrictions (you can move files to their final location after the transfer is complete using the `mv` command).
+4. Click the blue **start** button.
+
+5. Monitor your transfer status in the "Activity" panel
+
+## Stopping the sendpoint service
+
+When you're done transferring files, you can stop the Globus Connect Personal service:
+```bash
+./globusconnect -stop
+```
+
 # Git
 [See *_Git in a nutshell_*](https://git-scm.com/book/en/v2/Getting-Started-What-is-Git%3F)
 
@@ -235,73 +338,8 @@ fi
 ## micromamba
 Micromamba is a standalone version of Mamba which is an alternative to Conda. Refer to the installation instructions [here](https://mamba.readthedocs.io/en/latest/installation/micromamba-installation.html).
 
-## `python -m venv` Wrapper
-This wrapper script simplifies the usage of `python -m venv` for creating native python virtual environments. This is especially handy if you are using Homebrew on MacOS since, by default, Homebrew disallows the usage of pip in the global environment.
-
-### Wrapper Script
-Add the following to your `.zshrc` or `.bashrc`:
-```{code} bash
-:filename: ~/.zshrc
-# Usage
-# $ mkvenv myvirtualenv            # creates venv with default python3
-# $ mkvenv myvirtualenv 3.8        # creates venv with python3.8
-# $ mkvenv myvirtualenv python3.9  # creates venv with python3.9
-# $ venv myvirtualenv              # activates venv
-# $ deactivate                     # deactivates venv
-# $ rmvenv myvirtualenv            # removes venv
-
-export VENV_HOME="$HOME/.virtualenvs"
-[[ -d $VENV_HOME ]] || mkdir $VENV_HOME
-
-lsvenv() {
-  ls -1 $VENV_HOME
-}
-
-venv() {
-  if [ $# -eq 0 ]; then
-    echo "Please provide venv name"
-  else
-    source "$VENV_HOME/$1/bin/activate"
-  fi
-}
-
-mkvenv() {
-  if [ $# -eq 0 ]; then
-    echo "Please provide venv name"
-  else
-    local venv_name=$1
-    local python_cmd="python3"
-    
-    # Check if a Python version was specified
-    if [ $# -eq 2 ]; then
-      # If version starts with "python", use as is, otherwise prepend "python"
-      if [[ $2 == python* ]]; then
-        python_cmd=$2
-      else
-        python_cmd="python$2"
-      fi
-    fi
-    
-    # Check if the specified Python version exists
-    if command -v $python_cmd >/dev/null 2>&1; then
-      $python_cmd -m venv $VENV_HOME/$venv_name
-      echo "Created virtualenv '$venv_name' with $python_cmd"
-    else
-      echo "Error: $python_cmd not found"
-      return 1
-    fi
-  fi
-}
-
-rmvenv() {
-  if [ $# -eq 0 ]; then
-    echo "Please provide venv name"
-  else
-    rm -r $VENV_HOME/$1
-  fi
-}
-```
-Make sure to run `source ~/.bashrc` or `source ~/.zshrc` after adding the script.
+## pyenv
+`pyenv` is a tool to manage multiple Python versions. It allows you to easily switch between different Python versions and manage them in a virtual environment. Refer to the installation instructions [here](https://github.com/pyenv/pyenv).
 
 # SLURM
 SLURM (Simple Linux Utility for Resource Management) is a workload manager and job scheduler for Linux clusters that allows users to submit, manage, and monitor jobs on computing clusters. It handles the allocation of resources (like CPUs, GPUs, and memory) to jobs and manages job queues to ensure fair and efficient utilization of cluster resources.
