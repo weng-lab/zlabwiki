@@ -5,15 +5,19 @@ authors:
   - name: Christian S. Ramirez
     email: christian.ramirez1@umassmed.edu
 ---
-# Foundation Skills 
+
+# Foundation Skills
+
 ## Programming Essentials (Python)
+
 While there are many ways to go about this, here are some suggestions on how to get with started with python.
-> [Exercism](https://exercism.org/tracks/python) is a website that teaches programming languages in an "learn-by-example" manner. By enrolling in their python language tracks, you gain access to a library of exercises which teach basic python concepts. The exercises eventually become more challenging, requiring you to synthesize a solution to a specific coding problem from all previous concepts you've learnt. 
+> [Exercism](https://exercism.org/tracks/python) is a website that teaches programming languages in an "learn-by-example" manner. By enrolling in their python language tracks, you gain access to a library of exercises which teach basic python concepts. The exercises eventually become more challenging, requiring you to synthesize a solution to a specific coding problem from all previous concepts you've learnt.
 
 Once you have a handle on the basics, I strongly advise moving on to learning specific python libraries (i.e. numpy, pandas, tensorflow, pytorch, etc). While continuing to gain proficiency in python itself is good, most of the work in our lab will exclusively involve certain libraries which have their own learning curves.
 > [DataCamp](https://app.datacamp.com/) is a great place to start learning these libraries (ask Zhiping for access), but as before -- chose whatever learning material best suits you!
 
 ## Command Line Basics
+
 First start with learning the basics of Linux [here](https://linuxjourney.com/). I suggest only completing the "Grasshopper" courses, as these cover most of what you need to know. After you've gotten a good grasp of the basics, then move on to learning bash scripting [here](https://exercism.org/tracks/bash). While bash scripting is useful, know when to grab for fully-featured programming language as you requirements become more complex.
 > [Bash Cheatsheet](https://devhints.io/bash)
 
@@ -22,9 +26,11 @@ First start with learning the basics of Linux [here](https://linuxjourney.com/).
 ## Sequence Data Formats
 
 ### FASTQ (.fastq, .fq)
-Text-based format for storing both biological sequence data (usually nucleotide sequences) and their corresponding quality scores. 
+
+Text-based format for storing both biological sequence data (usually nucleotide sequences) and their corresponding quality scores.
 
 *Each sequence entry contains four lines*:
+
 1. Sequence identifier with description
 2. Raw sequence letters
 3. Plus sign (optional description)
@@ -46,6 +52,7 @@ Text-based format for storing both biological sequence data (usually nucleotide 
 | `<sample number>` | Numerical | Sample number from sample sheet |
 
 #### Example
+
 ``` {code} text
 :filename: example.fastq
 @071112_SLXA-EAS1_s_7:5:1:817:345
@@ -61,18 +68,22 @@ IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII6IBI
 ```
 
 ### SAM/BAM/CRAM (.sam, .bam, .cram)
+
 - SAM (Sequence Alignment/Map): Text format for storing sequence alignments against a reference genome
 - BAM: Binary version of SAM, compressed and indexed for faster processing
 - CRAM: Highly compressed reference-based alternative to BAM, designed for long-term storage
 
 ### FASTA (.fasta, .fa)
+
 Simple text-based format for representing nucleotide or peptide sequences. Typically, FASTA is used to store reference data (such as those from curtated databases).
 
 *Each entry consists of*:
+
 - A description line (starts with '>')
 - The sequence data on subsequent lines
 
 #### Example
+
 ``` {code} text
 :filename: example.fasta
 >Mus_musculus_tRNA-Ala-AGC-1-1 (chr13.trna34-AlaAGC)
@@ -86,10 +97,12 @@ CCCACATCCTCCA
 ## Variant Formats
 
 ### VCF/BCF (.vcf, .bcf)
+
 - VCF (Variant Call Format): Text file format for storing gene sequence variations
 - BCF: Binary version of VCF
 
 *Contains information about*:
+
 - Genomic position of variants
 - Reference and alternative alleles
 - Quality scores
@@ -99,9 +112,11 @@ CCCACATCCTCCA
 ## Genome Annotation Formats
 
 ### BED (.bed)
-Browser Extensible Data format for defining genomic features. 
+
+Browser Extensible Data format for defining genomic features.
 
 *Contains*:
+
 - Chromosome name
 - Start position
 - End position
@@ -124,10 +139,12 @@ Commonly used for displaying data tracks in genome browsers
 | **12** | **blockStarts** | List of values separated by commas corresponding to the starting coordinates of the blocks, coordinates calculated relative to those present in the chromStart column (the number of values must correspond to that of the "blockCount") | No |
 
 ### GFF/GTF (.gff, .gtf)
+
 - GFF (General Feature Format): Describes genes and other features of DNA, RNA, and protein sequences
 - GTF (Gene Transfer Format): More specialized version of GFF
 
 *Contains*:
+
 - Feature coordinates
 - Feature types
 - Score
@@ -148,17 +165,22 @@ Commonly used for displaying data tracks in genome browsers
 | **9** | **attribute** | A semicolon-separated list of tag-value pairs, providing additional information about each feature | Yes |
 
 ### WIG (.wig)
+
 The WIG (wiggle) format is used for displaying continuous-valued data in track format. It is particularly useful for showing expression data, probability scores, and GC percentage.
 
 WIG files  be formatted in two main ways:
+
 #### 1. Fixed Step
+
 ```
 fixedStep chrom=chrN start=pos step=stepInterval [span=windowSize]
 dataValue
 dataValue
 dataValue
 ```
+
 ##### Required Fields
+
 | Field | Description |
 | --- | --- |
 | **chrom** | Chromosome name (e.g., chr1) |
@@ -167,18 +189,22 @@ dataValue
 | **dataValue** | Numerical data value for each position |
 
 ##### Optional Fields
+
 | Field | Description |
 | --- | --- |
 | **span** | Size of window (defaults to step size) |
 
 #### 2. Variable Step
+
 ```
 variableStep chrom=chrN [span=windowSize]
 chromStart  dataValue
 chromStart  dataValue
 chromStart  dataValue
 ```
+
 ##### Required Fields
+
 | Field | Description |
 | --- | --- |
 | **chrom** | Chromosome name |
@@ -186,11 +212,13 @@ chromStart  dataValue
 | **dataValue** | Numerical data value for each position |
 
 ##### Optional Fields
+
 | Field | Description |
 | --- | --- |
 | **span** | Size of window (defaults to 1) |
 
 #### Common Use Cases
+
 1. Gene expression levels
 2. ChIP-seq signal intensity
 3. RNA-seq coverage
@@ -200,6 +228,7 @@ chromStart  dataValue
 7. Transcription factor binding signals
 
 #### Example
+
 ``` {code} text
 :filename: example.wig
 # Fixed-step example showing expression values
@@ -218,16 +247,20 @@ variableStep chrom=chr3 span=150
 ## Phylogenetic Formats
 
 ### Newick (.nwk)
-Standard format for representing phylogenetic trees using nested parentheses. 
+
+Standard format for representing phylogenetic trees using nested parentheses.
 
 *Contains*:
+
 - Tree topology
 - Branch lengths
 - Node labels
 - Bootstrap values
 
 ### NEXUS (.nex)
+
 Rich format for storing multiple types of biological data:
+
 - Character matrices
 - Trees
 - Distance matrices
@@ -237,12 +270,14 @@ Supports multiple data blocks and commands
 ## Index Formats
 
 ### BAI/CSI (.bai, .csi)
+
 - BAI: Index format for BAM files
 - CSI: Coordinate-sorted index format
 
 These index files are typically required by common [CLI tools]()
 
 *Enables*:
+
 - Random access to compressed files
 - Quick retrieval of alignments
 - Efficient genome browsing
@@ -250,21 +285,30 @@ These index files are typically required by common [CLI tools]()
 ## Genome Browser Formats
 
 ### bigWig/bigBed (.bw, .bb)
+
 - bigWig: Binary format of `.wig` files
 - bigBed: Binary format of `.bed` files
 
 *Advantages*:
+
 - Efficient random access
 - Reduced memory usage
 - Fast display in genome browsers
 
 # Pipeline Development
+
 ## Snakemake
+
 Snakemake is a workflow management system that helps automate data analysis pipelines. The functionality of snakemake cannot be covered here in meaningful detail. Please read through the [snakemake documentation](https://snakemake.readthedocs.io/en/stable/) and play around with example pipelines to gain familiarity with this powerful tool.
+
 # Project Management
+
 ## Documentation Standards
+
 (WIP)
+
 ## Project Folder Structure
+
 ```
 project_name/
 ├── README.md                  # Project overview, setup instructions, and usage
@@ -309,4 +353,5 @@ project_name/
     ├── scripts/              # Workflow-specific scripts
     └── logs/                 # Log files
 ```
+
 This is not an absolute standard to follow. The above directory tree is meant more as a guideline for how to approach project organization.
