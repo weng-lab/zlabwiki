@@ -154,6 +154,46 @@ other useful parameters:
 - `color` (set track color, supports RGB)
 - `visibility` (set each track to ideal visibility)
 
+### Prepare trackDb.txt / one-file hub.txt
+
+To add an entry for each dataset, it's helpful to use a loop to modify a template file by inserting each dataset's unique metadata. Below is an example of how I created the ENCODE Epigenetics Collection hub.
+
+- Screenshot of ATAC-seq metadata file:
+![metadata](https://www.dropbox.com/scl/fi/u11ogmtz75bprs2rfz5eg/Screenshot-2025-07-09-at-2.20.23-PM.png?rlkey=0j5l4jsk8uh9a5yo98v2n84t1&st=66yp831z&dl=1)  
+
+- Template file **track.txt**:
+
+```txt
+track File_Type_FID
+type bigWig 
+shortLabel EID
+longLabel NAME File_Type signal
+bigDataUrl https://www.encodeproject.org/files/FID/@@download/FID.bigWig
+visibility full
+maxHeightPixels 50
+color RGB
+autoScale on
+```
+
+- Code to prepare trackDb.txt:
+
+```bash
+rm -f trackDb.txt
+for File_Type in ATAC DNase CTCF H3K4me3 H3K27ac
+do
+  cat ${File_Type}-List.txt | while IFS=$'\t' read -r EID FID name BIOTYPE Organ
+  do
+     NAME=$(echo $name | awk -F "_ENCDO" '{print $1}')
+     RGB=$(grep -wi "${File_Type}" signal.color.txt | cut -f 2)
+     echo -e "${File_Type}\t${OID}\t${EID}\t${BIOTYPE}\t${RGB}"
+     
+     sed -e "s/EID/${EID}/g" -e "s/FID/${FID}/g" \
+         -e "s/File_Type/${File_Type}/" -e "s/RGB/${RGB}/" \
+         -e "s|NAME|${NAME}|" track.txt >> trackDb.txt
+  done
+done
+```
+
 ### Share track hub with collaborators
 
 1. Share the URL of ***hub.txt*** for people to load at **[track hub page](https://genome.ucsc.edu/cgi-bin/hgHubConnect)**, eg. <http://users.wenglab.org/gaomingshi/ENCODE_Reg/hub.txt>
