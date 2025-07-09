@@ -159,7 +159,7 @@ other useful parameters:
 To add an entry for each dataset, it's helpful to use a loop to modify a template file by inserting each dataset's unique metadata. Below is an example of how I created the ENCODE Epigenetics Collection hub.
 
 - Screenshot of ATAC-seq metadata file:
-![metadata](https://www.dropbox.com/scl/fi/u11ogmtz75bprs2rfz5eg/Screenshot-2025-07-09-at-2.20.23-PM.png?rlkey=0j5l4jsk8uh9a5yo98v2n84t1&st=66yp831z&dl=1)  
+![metadata](images/metadata.png)  
 
 - Template file **track.txt**:
 
