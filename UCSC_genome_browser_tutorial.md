@@ -1,25 +1,13 @@
 ---
 title: UCSC genome browser tutorial
-subtitle: Onboarding tutorials for new lab members
+subtitle: A tutorial on how to use UCSC genome browser
 date: 2025-07-07
 authors:
   - name: Mingshi Gao
     email: mingshi.gao@umassmed.edu
 ---
 
-## List of Contents
-
-1. Overview of USCS genome browser
-2. Supported data types
-3. Commonly used data types in Zlab
-4. Data preparation
-   - ENCODE data
-   - Custom data transformation
-5. How to make custome track
-6. How to build track hub
-7. Useful links
-
-## 1. Overview of USCS genome browser
+## 1. Overview of UCSC genome browser
 
 The [UCSC Genome Browser](https://genome.ucsc.edu/) provides a rapid and reliable display of any requested genomic region at any scale. It supports a wide range of genome assemblies across various species (eg. human GRCh38 and mouse mm10) and includes dozens of aligned annotation tracks.  
 
@@ -65,6 +53,7 @@ The [UCSC Genome Browser](https://genome.ucsc.edu/) provides a rapid and reliabl
 Find the data you want to visualize on the ENCODE portal, right click the download logo and copy the data URL(*copy link address*) for Genome Browser visualization
 
 ![encode data](images/encode_data.png)
+&nbsp;
 
 ```{note}
 Most ENCODE data is available on the Zervers at ***/data/projects/encode/data/EID***.
