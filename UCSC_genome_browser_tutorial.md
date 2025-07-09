@@ -138,12 +138,14 @@ track hub directory setup example:
    - **hub.txt** (add ***useOneFile on*** and ***genome xxx*** )
 
 ![enter image description here](images/enter_image_desc.png)
+&nbsp;
 
 ### Entries of trackDb.txt
 
 Specify each track in the trackDb.txt.
 
 ![define track](images/define_track.png)
+&nbsp;
 
 5 basic parameters needed for a track are:
 
