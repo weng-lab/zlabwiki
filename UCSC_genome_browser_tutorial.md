@@ -24,6 +24,7 @@ authors:
 The [UCSC Genome Browser](https://genome.ucsc.edu/) provides a rapid and reliable display of any requested genomic region at any scale. It supports a wide range of genome assemblies across various species (eg. human GRCh38 and mouse mm10) and includes dozens of aligned annotation tracks.  
 
 ![genome_browser_sc](images/genome_sc.png)
+&nbsp;
 
 ## 2. Supported data types
 
@@ -41,7 +42,8 @@ The [UCSC Genome Browser](https://genome.ucsc.edu/) provides a rapid and reliabl
 **hic: Hi-C** contact matrices
 **halSnake**: HAL Snake Format
 **vcfTabix**: Variant Call Format
-**vcfPhasedTrio**: Variant Call Format Trios  
+**vcfPhasedTrio**: Variant Call Format Trios
+&nbsp;
 
 ## 3. Commonly used data types in Zlab
 
@@ -53,7 +55,8 @@ The [UCSC Genome Browser](https://genome.ucsc.edu/) provides a rapid and reliabl
 
 3. **bigInteract**: Visualize pairwise interactions for assays such as HiC and ChIA-PET.
 ![3D genome](images/3d_genome_example.png)
-![biginteract example](images/biginteract_example.png)  
+![biginteract example](images/biginteract_example.png)
+&nbsp;
 
 ## 4. Data preparation
 
@@ -100,7 +103,8 @@ bedpe ---> bed5+13 -- bedToBigBed--> bigInteract
 
 ![bedpe](images/bedpe.png)
 
-![biginteract](images/biginteract.png)  
+![biginteract](images/biginteract.png)
+&nbsp;
 
 ## 5. How to make custom track
 
@@ -108,7 +112,8 @@ Custom track is useful for quickly browse one or a few datasets.
 To add custom track, click **Custom Tracks** under the **My Data** tab and then click **Add custom tracks**. In the [page](https://genome.ucsc.edu/cgi-bin/hgCustom), paste in the data URL or upload from local.
 ![ct1](images/ct1.png)
 
-![ct2](images/ct2.png)  
+![ct2](images/ct2.png)
+&nbsp;
 
 ## 6. How to make track hub
 
