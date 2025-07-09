@@ -13,4 +13,5 @@ project:
     - file: getting_started.md
     - file: software_tools.md
     - file: learning_resources.md
+    - file: UCSC_genome_browser_tutorial.md
     
