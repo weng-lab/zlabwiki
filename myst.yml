@@ -14,4 +14,5 @@ project:
     - file: software_tools.md
     - file: learning_resources.md
     - file: UCSC_genome_browser_tutorial.md
+    - file: Trackhub_description.md
     
