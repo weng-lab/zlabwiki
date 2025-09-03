@@ -1,9 +1,9 @@
 ---
-title: Trackhub description
+title: Tissue/Organ Colors
 date: 2025-07-07
 ---
 
-Organ color assigments for zlab trackhubs:
+Tissue/Organ colors for zlab trackhubs:
 
 |Color|Organ|RGB Code|
 |--- |--- |--- |
@@ -53,7 +53,7 @@ Organ color assigments for zlab trackhubs:
 |<span style="color: rgb(230,138,204);">●</span>|Uterus|rgb(230,138,204)|
 |<span style="color: rgb(255,101,174);">●</span>|Vagina|rgb(255,101,174)|
 
-Also in a key-value pair json format:
+Same as above, but in a key-value pair format (JSON):
 
 ```json
 {
