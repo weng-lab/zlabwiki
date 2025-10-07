@@ -1,5 +1,7 @@
 # zlabwiki
 
+## https://wiki.wenglab.org
+
 ## Overview
 Welcome to the zlabwiki github! This repo contains the source code for the zlab wiki, which is a collection of guides and tutorials for navigating the Zlab computing environment. The wiki is built using the [MyST](https://github.com/jupyter-book/mystmd) framework, which allows for seamless integration of markdown and jupyter notebooks.
 
