@@ -426,13 +426,13 @@ chmod 600 ~/.jupyter/certfiles/jupyter.key
 ### Add config options to your `jupyter_server_conifg.py`
 Make sure to replace `HOSTNAME` with the machine you are on (i.e. z014) and `USERNAME` with your username.
 ```python
-c.ServerApp.certfile = '/Users/USERNAME/.jupyter/certfiles/jupyter.pem'
-c.ServerApp.keyfile = '/Users/USERNAME/.jupyter/certfiles/jupyter.key'
+c.ServerApp.certfile = '/home/USERNAME/.jupyter/certfiles/jupyter.pem'
+c.ServerApp.keyfile = '/home/USERNAME/.jupyter/certfiles/jupyter.key'
 c.ServerApp.ip = 'HOSTNAME'
 c.ServerApp.port = 8888
 c.ServerApp.allow_remote_access = True
 c.ServerApp.password_required = True
-c.ServerApp.config_file = '/Users/USERNAME/.jupyter/jupyter_server_config.json'
+c.ServerApp.config_file = '/home/USERNAME/.jupyter/jupyter_server_config.json'
 c.ServerApp.notebook_dir = '/data/GROUP/USERNAME'
 ```
 Now start jupyter lab using your preferred method. [See Getting Started](getting_started.md) if you are unsure. Navigate to `https://127.0.0.1:8888/lab`. If this is you first time doing this, your browser may return a self-signed certificate warning. Ignore this error, and connect to the url. Now you can login using the password you made at the beginning.
