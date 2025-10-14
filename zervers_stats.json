@@ -1,0 +1,58 @@
+{
+    "z010": {
+        "hostname": "z010.internal.wenglab.org",
+        "cpu_model": "Intel(R) Xeon(R) Platinum 8180 CPU @ 2.50GHz",
+        "cpu_cores": 112,
+        "cpu_threads": 112,
+        "ram_total_gb": 1510
+    },
+    "z011":{
+        "hostname": "z011.internal.wenglab.org",
+        "cpu_model": "Intel(R) Xeon(R) Platinum 8180 CPU @ 2.50GHz",
+        "cpu_cores": 112,
+        "cpu_threads": 112,
+        "ram_total_gb": 1510
+    },
+    "z012": {
+        "hostname": "z012.internal.wenglab.org",
+        "cpu_model": "INTEL(R) XEON(R) PLATINUM 8568Y+",
+        "cpu_cores": 192,
+        "cpu_threads": 192,
+        "ram_total_gb": 1007
+    },
+    "z013": {
+        "hostname": "z013.internal.wenglab.org",
+        "cpu_model": "Intel(R) Xeon(R) Platinum 8180 CPU @ 2.50GHz",
+        "cpu_cores": 112,
+        "cpu_threads": 112,
+        "ram_total_gb": 1510
+    },
+    "z014": {
+        "hostname": "z014.internal.wenglab.org",
+        "cpu_model": "Intel(R) Xeon(R) Platinum 8180 CPU @ 2.50GHz",
+        "cpu_cores": 112,
+        "cpu_threads": 112,
+        "ram_total_gb": 1510
+    },
+    "z020": {
+        "hostname": "z020.internal.wenglab.org",
+        "cpu_model": "Intel(R) Xeon(R) Gold 6134 CPU @ 3.20GHz",
+        "cpu_cores": 32,
+        "cpu_threads": 32,
+        "ram_total_gb": 376
+    },
+    "z021": {
+        "hostname": "z021.internal.wenglab.org",
+        "cpu_model": "Intel(R) Xeon(R) Gold 6134 CPU @ 3.20GHz",
+        "cpu_cores": 32,
+        "cpu_threads": 32,
+        "ram_total_gb": 376
+    },
+    "z022": {
+        "hostname": "z022.internal.wenglab.org",
+        "cpu_model": "Intel(R) Xeon(R) Gold 6134 CPU @ 3.20GHz",
+        "cpu_cores": 32,
+        "cpu_threads": 32,
+        "ram_total_gb": 376
+    }
+}
