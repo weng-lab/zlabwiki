@@ -1,0 +1,173 @@
+---
+title: Globus
+---
+
+import { Steps } from '@astrojs/starlight/components'
+
+[Globus](https://www.globus.org/) is a service that allows you to transfer files between "endpoints" (computers).
+
+## Login to the Globus
+
+<Steps>
+1. Go to [https://www.globus.org/](https://www.globus.org/) and select **log in**.
+2. Under **use your existing organizational login**, start typing "University of Massachusetts Medical School" and select the item from the dropdown list.
+3. You will be redirected to a **CILogon** page:
+   - Enter your **short form username**. This is the first five characters of your last name, followed by the first letter of your first name, and ends with a number if your email has one. For example, `Ben.Kresge@umassmed.edu` is `kresgb`.
+   - Enter your **umassmed.edu password**.
+4. You will be prompted to authenticate using **2FA (two-factor authentication)**.
+5. On the next screen, you will see an **information release** prompt:
+   - You can choose any option. I chose "Ask me again if information to be provided to this service changes." but ANY should be fine.
+6. Press **accept** to proceed.
+</Steps>
+
+After completing these steps, you should land on the main Globus screen titled **file manager**.
+
+## Download Globus endpoint software
+
+:::note
+If you have already installed and set up Globus Connect Personal, you can skip to Step 4 by navigating to your existing installation directory (e.g., `cd globusconnectpersonal-3.2.6`).
+:::
+
+<Steps>
+
+<ol>
+
+<li>
+Once you are logged into the server of your choice, run the following command to download Globus Connect Personal:
+
+```bash
+wget https://downloads.globus.org/globus-connect-personal/linux/stable/globusconnectpersonal-latest.tgz
+```
+</li>
+
+<li>
+Extract the file using the following command:
+
+```bash
+tar xzf globusconnectpersonal-latest.tgz
+```
+</li>
+
+</ol>
+
+</Steps>
+
+## Create Globus endpoint
+
+<Steps>
+
+<ol>
+
+<li>
+Navigate to the newly created directory. The directory name should follow the format `globusconnectpersonal-x.y.z` (e.g., `globusconnectpersonal-3.2.6`):
+
+```bash
+cd globusconnectpersonal-3.2.6
+```
+</li>
+
+<li>
+Run the following command to set up Globus Connect Personal:
+
+```bash
+./globusconnectpersonal -setup --no-gui
+```
+</li>
+
+<li>
+You will be prompted to log in via a large URL starting with `https://auth.globus.org`. The prompt will wait for an authentication code:
+   - Follow the link (usually **CTRL/CMD + Left Mouse Click**).
+   - The site will ask for certain permissions. Click **allow**.
+   - The site will display a **native app authorization code**. Copy this code.
+   - Paste the code back into the shell prompt.
+
+:::caution
+The code only lasts 10 minutes!
+:::
+</li>
+
+<li>
+Next, the shell prompt will display:
+
+```
+== starting endpoint setup
+
+Input a value for the Endpoint Name:
+```
+
+- You can choose what you want to name the endpoint, but you will need to remember this name later when transferring files.
+- For example, if you are on `z012`, you might name it `Ben-z012`.
+</li>
+
+</ol>
+
+</Steps>
+
+## Start Globus endpoint service
+
+<Steps>
+
+<ol>
+
+<li>
+After setup is complete, start the Globus Connect Personal service:
+
+```bash
+./globusconnectpersonal -start &
+```
+
+This will run the service in the background.
+
+:::note
+You can confiure whcih folders are accessible by using the --restrict-folders flag (e.g., `--retrict-folders /home/user/data,/home/user/dev`)
+:::
+</li>
+
+<li>
+To verify the service is running, you can use:
+
+```bash
+./globusconnectpersonal -status
+```
+
+We expect to see something like:
+
+```
+Globus Online:   connected
+Transfer Status: idle
+```
+</li>
+
+</ol>
+
+</Steps>
+
+## Transfer files
+
+<Steps>
+
+1. Return to the [Globus web interface](https://app.globus.org/file-manager)
+   - If you are transfering file from a client device (such as a laptop), you will need to first install the Globus endpoint software on the client device [here](https://www.globus.org/globus-connect-personal). Once you've installed the software for your client device's operating system and see the collection appear in the Globus file manger web interface, you can proceed to the next step.
+   <br />
+2. In the File Manager:
+   - On the left panel, search for and select your source endpoint (where your files are currently located).
+   - On the right panel, search for and select your destination endpoint (the one you created in Step 3).
+   <br />
+3. Navigate to the desired directories:
+   - In the source panel, browse to select the files/folders you want to transfer.
+   - In the destination panel, you will only have access to your home directory on the zerver due to Globus Connect Personal's permission restrictions (you can move files to their final location after the transfer is complete using the `mv` command).
+   <br />
+4. Click the blue **start** button.
+5. Monitor your transfer status in the "Activity" panel
+
+</Steps>
+
+## Stopping the sendpoint service
+
+When you're done transferring files, you can stop the Globus Connect Personal service by running:
+
+```bash
+./globusconnect -stop
+```
+
+

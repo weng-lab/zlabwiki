@@ -1,0 +1,39 @@
+---
+title: Snakemake
+---
+
+import { FileTree } from '@astrojs/starlight/components'
+
+Snakemake is a workflow management system that helps automate data analysis pipelines. Please read through the [snakemake documentation](https://snakemake.readthedocs.io/en/stable/) to learn more.
+
+## Example Project Folder Structure
+
+<FileTree>
+
+- .gitignore
+- README.md
+- LICENSE.md
+- workflow
+  - rules
+    - module1.smk
+    - module2.smk
+  - envs
+    - tool1.yaml
+    - tool2.yaml
+  - scripts
+    - script1.py
+    - script2.R
+  - notebooks
+    - notebook1.py.ipynb
+    - notebook2.r.ipynb
+  - report
+    - plot1.rst
+    - plot2.rst
+  - Snakefile
+- config
+  - config.yaml
+  - some-sheet.tsv
+- results
+- resources
+
+</FileTree>

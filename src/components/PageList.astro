@@ -1,0 +1,26 @@
+---
+import { getCollection } from 'astro:content';
+
+interface Props {
+  folder: string;
+}
+
+const { folder } = Astro.props;
+
+// Get all docs and filter to the specified folder
+const allDocs = await getCollection('docs');
+const folderPages = allDocs
+  .filter(doc => doc.id.startsWith(folder + '/') && doc.id !== folder + '/index')
+  .sort((a, b) => a.data.title.localeCompare(b.data.title));
+---
+
+<ul>
+  {folderPages.map(page => (
+    <li>
+      <a href={`/${page.id.replace(/\.mdx?$/, '').replace(/\/index$/, '')}/`}>
+        {page.data.title}
+      </a>
+      {page.data.description && <p>{page.data.description}</p>}
+    </li>
+  ))}
+</ul>

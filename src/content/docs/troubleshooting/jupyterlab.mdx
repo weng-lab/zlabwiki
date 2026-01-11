@@ -1,0 +1,33 @@
+--- 
+title: Jupyterlab
+--- 
+Troubleshooting for common issues with Jupyterlab
+
+## Deleting files
+
+If you are experiencing issues deleting files form the Jupyterlab IDE here is how you go about fixing it.
+
+First you need to find your Jupyter config file. It will most likely be located at `/home/USERNAME/.jupyter`. 
+
+`cd` into that directory:
+
+```bash
+cd /home/$(whoami)/.jupyter
+```
+
+`ls` and look for the file named `jupyter_server_config.py`. If you do not see the file,
+run:
+
+```bash
+jupyter server --generate-config
+```
+
+Now edit the `jupyter_server_config.py`:
+
+```bash
+EDITOR jupyter_server_config.py
+```
+
+Look for the config option `c.FileContentsManager.delete_to_trash`. If it is set to `True`, change it to `False`. 
+
+Now you should be able to delete files in Jupyterlab. 👍

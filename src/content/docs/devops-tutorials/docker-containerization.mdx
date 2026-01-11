@@ -1,0 +1,218 @@
+---
+title: Docker Containerization
+sidebar:
+  hide: true
+---
+
+## Overview
+
+Docker is a containerization system that packages software and its dependencies into _containers_: isolated, reproducible environments. Containers let you run the same workflow with the same software versions on different machines (laptop, server, cloud) without reinstalling anything.
+
+In bioinformatics, tools often rely on specific compiler versions, system libraries, GPU stacks, or complex R/Python setups. Docker solves major reproducibility and environment-management problems, and removes the need to repeatedly configure difficult environments on different machines.
+
+---
+
+## Why Docker Matters for Bioinformatics
+
+### Reproducibility
+
+- Exact versions of tools, libraries, compilers, and R/Python packages are frozen inside an image.
+- Pipelines can be re-run identically years later.
+- Eliminates “it worked on my machine” problems.
+
+### Portability
+
+- Build an environment once, then run it anywhere: your laptop, a lab server, Slurm via Singularity/Apptainer, or the cloud.
+- Ensures that collaborators, regardless of machine, use the same software setup without any manual installation.
+  - Sharing an analysis no longer means sending installation instructions. You just say: _“Use this image.”_
+
+---
+
+## Core Terms TODO: reorder these to be more logical
+
+### Dockerfile
+
+A text file (`.dockerfile`) that describes how to build an image: base images, system packages, environment variables, CUDA drivers, R/Python packages, etc.  
+This is analogous to a “recipe” for your environment and is version-controlled along with your workflow.
+
+### Images
+
+Read-only templates created from a Dockerfile. Immutable and versioned.  
+Images can be:
+
+- pulled from Docker Hub or another registry,
+- or built locally during development.
+
+Images define the environment; containers run the environment.
+
+### Containers
+
+Running (or stopped) instances of images.  
+They are:
+
+- lightweight,
+- disposable,
+- and isolated.
+
+### Registry (Docker Hub)
+
+A remote storage location for images. You can:
+
+- pull public images,
+- push lab-maintained images,
+- tag versions for release.
+
+Docker Hub is the default, but there are other options available as well. TODO: add information for our registry if we have one!
+
+### TODO: add section on Layers?
+
+## Common Docker Commands
+
+> Focused on the commands you will use most often.  
+> Full docs: [Docker CLI Reference](https://docs.docker.com/reference/cli/docker/)
+
+---
+
+### Build an Image
+
+Creates a reproducible environment from your Dockerfile.
+
+```bash
+docker build -t <image-name>:<tag> <path-to-Dockerfile>
+```
+
+- `<image-name>` → the name you give your image
+- `<tag>` → version label (e.g., `latest`, `v1`)
+- `<path-to-Dockerfile>` → folder containing your Dockerfile
+
+---
+
+### Pull an Image
+
+Downloads the image from the specified registry to your local machine so you can run it.
+
+```bash
+docker pull <registry>/<username>/<repository>:<tag>
+```
+
+- `<registry>` → optional, defaults to Docker Hub if omitted; for other registries, specify the URL (e.g., `ghcr.io`)
+- `<username>` → account or namespace hosting the image
+- `<repository>` → the name of the image
+- `<tag>` → version or variant of the image
+
+---
+
+### Push an Image
+
+Uploads your local image to a remote registry.
+
+```bash
+docker push <registry>/<username>/<repository>:<tag>
+```
+
+- Requires authentication with the registry (`docker login` or `docker login <registry>`).
+- Only new layers are uploaded; layers that already exist remotely are skipped.
+- Useful for distributing lab-maintained images or sharing analysis environments.
+- Allows others to pull the exact same image.
+- Let's you back up your images remotely.
+
+### Open an Interactive Container
+
+Opens a shell inside the container to test tools or run commands.
+
+```bash
+docker run -it --rm <image-name>:<tag> bash
+```
+
+- `-it` → interactive terminal
+- `--rm` → (optional, but recommended) delete container automatically when you exit
+
+**Exit the container:**
+
+```bash
+exit
+```
+
+or press `Ctrl+D`.
+
+---
+
+### List Your Images
+
+```bash
+docker images
+```
+
+**Example output:**
+
+```
+IMAGE                                            ID             DISK USAGE
+autumnusomega/bioinformatics:nmf-stuff           04d38c6d4aec       4.65GB
+autumnusomega/bioinformatics:spatial             5f711a88e315       16.6GB
+```
+
+---
+
+### List Running Containers
+
+```bash
+docker ps
+```
+
+**Example output:**
+
+```
+CONTAINER ID   IMAGE           COMMAND      STATUS      PORTS   NAMES
+1a2b3c4d5e6f   myimage:v1     "/bin/bash"   Up 5m               test_run
+```
+
+- Shows currently running containers, their IDs, image, command, and status.
+
+---
+
+### Remove a Container
+
+Deletes a stopped container to free space.
+
+```bash
+docker rm <container-id>
+```
+
+- You can stop a running container first with:
+
+```bash
+docker stop <container-id>
+```
+
+---
+
+### Remove an Image
+
+Deletes an image from your machine.
+
+```bash
+docker rmi <image-name>:<tag>
+```
+
+- Cannot remove an image that is currently being used by a container.
+
+---
+
+## Best Practices for Bioinformatics Containers
+
+**Keep images minimal**
+
+- Install only the tools needed for the workflow.
+- Use secondary package managers (e.g., `conda`, `BiocManager`) _only if necessary_.
+- Either start from a minimal base image (e.g., `ubuntu`, `debian`) or a bioinformatics-focused base (e.g., `biocontainers`, `rocker`), or a task-specific base (e.g. Greg's CUDA image that is compatible with our servers).
+
+**Pin versions everywhere**
+
+- In the Dockerfile (`samtools=1.19`, R version, Python version).
+- In requirements files.
+- In Snakemake envs to match the container.
+
+**Order layers apppropriately**
+
+- TODO: explain layering best practices (as I use them)
+- TODO have an example Dockerfile for a bioinformatics workflow here?

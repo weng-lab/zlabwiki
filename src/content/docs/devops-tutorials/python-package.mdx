@@ -1,0 +1,28 @@
+--- 
+title: Python Package
+sidebar:
+  hidden: true
+---
+
+A comprehensive tutorial discussing the tools, steps, and best practices on how to author, build, and publish python packages.
+
+## uv
+
+`uv` is an extremely fast Python package and project manager written in Rust that aims to be a "Cargo for Python." It's designed as a single tool to replace pip, pip-tools, pipx, poetry, pyenv, and virtualenv, offering 10-100x speed improvements over traditional tools. `uv` provides a drop-in replacement for existing workflows while adding advanced features like dependency version overrides and alternative resolution strategies.
+
+### How to install uv
+
+Install to `/zata/zippy/$(whoami)/.local` to create a global installation on all zervers (/zata is a shared filesystem).
+
+```bash
+mkdir -p /zata/zippy/$(whoami)/.local/bin
+mkdir -p /zata/zippy/$(whoami)/.local/share
+mkdir -p /zata/zippy/$(whoami)/.cache
+curl -LsSf https://astral.sh/uv/install.sh | env UV_INSTALL_DIR=/zata/zippy/$(whoami)/.local/bin UV_PYTHON_INSTALL_DIR=/zata/zippy/$(whoami)/.local/share UV_CACHE_DIR=/zata/zippy/$(whoami)/.cache sh
+```
+
+### Documentation
+
+Refer to the [uv documentation](https://docs.astral.sh/uv/) to get more detailed information on subcommands.
+
+

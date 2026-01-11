@@ -1,0 +1,56 @@
+--- 
+title: Cluster Software
+---
+
+## SLURM
+
+SLURM (Simple Linux Utility for Resource Management) is a workload manager and job scheduler for Linux clusters that allows users to submit, manage, and monitor jobs on computing clusters. It handles the allocation of resources (like CPUs, GPUs, and memory) to jobs and manages job queues to ensure fair and efficient utilization of cluster resources.
+
+You can follow this [tutorial](https://docs.google.com/presentation/d/1g8Es6akTtoYsEACwH1i0gnmvlS4ugLjj-L3RPMJA65o/edit?usp=sharing) to get started with SLURM.
+
+## IBM Spectrum LSF (UMass SCI Cluster)
+
+Please refer to the [getting started page](https://hpc.umassmed.edu/doc/index.php?title=Getting_started) on the HPC wiki at `hpc.umassmed.edu`. Make sure that you are connected to the UMMS network (on-premises) or [VPN](getting_started.md#vpn_setup).
+
+### Useful bash aliases
+
+Add the following to you bashrc.
+
+```bash
+:filename: ~/.bashrc
+# add aliases to the bottom of your .bashrc file ...
+alias gpu='bsub -q gpu -gpu "num=1:gmodel=TeslaV100_SXM2_32GB" -W 1440 -n 10 -R "rusage[mem=8000]" -R "span[hosts=1]" -Is bash'
+alias cpu='bsub -q interactive -n 10 -R "rusage[mem=8000]" -R "span[hosts=1]" -Is bash'
+```
+
+Run `source ~/.bashrc`. Now, by running `gpu` or `cpu` in the terminal, you can now reserve a gpu and cpu for 24 hours and start an interactive bash shell.
+
+### Monitor GPU usage
+
+Say you are running a gpu intensive program. If you want to make sure you program is still running based on the gpu usage, you can run `watch -n 1 nvidia-smi` in the terminal. You should see something like this:
+
+```
+Thu Dec 19 15:04:21 2024
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 565.57.01              Driver Version: 565.57.01      CUDA Version: 12.7     |
+|-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  Tesla V100-SXM2-32GB           Off |   00000000:AF:00.0 Off |                    0 |
+| N/A   63C    P0            162W /  300W |     640MiB /  32768MiB |     69%      Default |
+|                                         |                        |                  N/A |
++-----------------------------------------+------------------------+----------------------+
+
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI        PID   Type   Process name                              GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|    0   N/A  N/A   3257189      C   /opt/venv/bin/python3                         636MiB |
++-----------------------------------------------------------------------------------------+
+```
+
+
+

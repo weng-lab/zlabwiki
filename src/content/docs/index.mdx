@@ -1,0 +1,28 @@
+---
+title: Welcome to the ZLab Wiki!
+description: Get started with onboarding, software tutorials, and other ancilliary guides curated by our very own lab members!
+template: splash # Remove or comment out this line to display the site sidebar on this page.
+hero:
+  tagline: Get started with onboarding, software tutorials, and other ancilliary guides curated by our very own lab members!
+  image:
+    file: ../../assets/lab-group-photo.jpg
+  actions:
+    - text: Get Started
+      link: /getting-started/
+      icon: right-arrow
+    - text: Visit the Lab Website
+      link: https://www.umassmed.edu/wenglab/
+      icon: external
+      variant: minimal
+---
+
+import { Card, CardGrid } from '@astrojs/starlight/components';
+import papers from '../../assets/data/papers.json'
+import PaperCard from '../../components/PaperCard.astro';
+
+## Recent Publications
+
+{papers.map(paper => (
+<PaperCard {...paper} />
+))}
+

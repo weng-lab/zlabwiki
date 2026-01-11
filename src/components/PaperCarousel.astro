@@ -1,0 +1,65 @@
+---
+import { Image } from 'astro:assets';
+
+const images = await Astro.glob('../assets/images/*.png');
+---
+
+<div class="paper-carousel">
+  <div class="carousel-viewport" id="carousel">
+    <div class="carousel-container">
+      {images.map((img, i) => (
+        <div class="carousel-slide">
+          <Image src={img.default} alt={`Paper ${i + 1}`} />
+        </div>
+      ))}
+    </div>
+  </div>
+  <button class="carousel-btn prev" id="prev">←</button>
+  <button class="carousel-btn next" id="next">→</button>
+</div>
+
+<style>
+  .paper-carousel {
+    position: relative;
+    max-width: 600px;
+    margin: 2rem auto;
+  }
+  .carousel-viewport {
+    overflow: hidden;
+  }
+  .carousel-container {
+    display: flex;
+  }
+  .carousel-slide {
+    flex: 0 0 100%;
+    min-width: 0;
+  }
+  .carousel-slide img {
+    width: 100%;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  }
+  .carousel-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: var(--sl-color-bg);
+    border: 1px solid var(--sl-color-gray-4);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+  }
+  .prev { left: -50px; }
+  .next { right: -50px; }
+</style>
+
+<script>
+  import EmblaCarousel from 'embla-carousel';
+
+  const viewport = document.getElementById('carousel');
+  const embla = EmblaCarousel(viewport, { loop: true });
+
+  document.getElementById('prev')?.addEventListener('click', () => embla.scrollPrev());
+  document.getElementById('next')?.addEventListener('click', () => embla.scrollNext());
+</script>

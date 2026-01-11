@@ -1,0 +1,80 @@
+--- 
+title: SSH
+--- 
+
+Troubleshooting for common SSH issues
+
+## Permissions
+
+Set the permissions of directories, keys and config file to the following numeric codes using `chmod`.
+
+| Item | Sample | Numeric | Bitwise |
+|------|--------|---------|---------|
+| SSH folder | `~/.ssh` | `700` | `drwx------` |
+| Public key | `~/.ssh/id_rsa.pub` | `644` | `-rw-r--r--` |
+| Private key | `~/.ssh/id_rsa` | `600` | `-rw-------` |
+| Config | `~/.ssh/config` | `600` | `-rw-------` |
+| Home folder | `~` | `755` at most | `drwxr-xr-x` at most |
+
+Or simply run:
+
+```bash 
+chmod 700 $HOME/.ssh
+chmod 600 $HOME/.ssh/*
+chmod 644 $HOME/.ssh/*.pub
+```
+
+## Repeat login
+
+When logging into the zervers, you login twice:
+
+1. Once on the bastion server
+2. and another time to access an internal server (i.e. z011, z012 ... z014)
+
+This can be reduced to just one login by setting up SSH key authentication between our client and the internal servers.
+
+### Generate key pair
+
+On your client machine, run `ssh-keygen`. Give the identity file pair a custom name (e.g. 'zervers'). Do not set a passphrase for the key file.
+
+```bash
+ssh-keygen -t ed25519 -a 100 -f ~/.ssh/zervers
+```
+
+### Send public key file to internal server
+
+```bash
+ssh-copy-id -i ~/.ssh/zervers USERNAME@HOSTNAME 
+```
+
+This adds your public key to the `~/.ssh/authorized_users` file on the remote machine.
+
+### Edit your ssh config
+
+On you client machine edit the ssh config file.
+
+```bash
+vim ~/.ssh/config
+```
+
+Add the following line to the indicated host in your ssh_config file.
+
+```bash
+Host z010 z011 z012 z013 z014
+    # previous config options ...
+    IdentityFile ~/.ssh/zervers
+```
+
+### Test it out
+
+Now when you log in to the zervers, you should only have to login **once**!
+
+```bash
+ssh HOSTNAME
+```
+
+:::note
+If you access multiple servers frequently (e.g. z014 & z010), you will have to repeat this process for each machine.
+:::
+
+

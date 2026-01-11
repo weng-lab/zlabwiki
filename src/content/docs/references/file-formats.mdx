@@ -1,0 +1,225 @@
+--- 
+title: File Formats
+---
+
+## FASTQ (.fastq, .fq)
+
+Text-based format for storing both biological sequence data (usually nucleotide sequences) and their corresponding quality scores.
+
+*Each sequence entry contains four lines*:
+
+1. Sequence identifier with description
+2. Raw sequence letters
+3. Plus sign (optional description)
+4. Quality scores encoded in ASCII characters
+
+| Element | Requirements | Description |
+| --- | --- | --- |
+| `@` | @ | Each sequence identifier line starts with @ |
+| `<instrument>` | Characters allowed: a–z, A–Z, 0–9 and underscore | Instrument ID |
+| `<run number>` | Numerical | Run number on instrument |
+| `<flowcell ID>` | Characters allowed: a–z, A–Z, 0–9 | Flowcell ID |
+| `<lane>` | Numerical | Lane number |
+| `<tile>` | Numerical | Tile number |
+| `<x_pos>` | Numerical | X coordinate of cluster |
+| `<y_pos>` | Numerical | Y coordinate of cluster |
+| `<read>` | Numerical | Read number. 1 can be single read or Read 2 of paired-end |
+| `<is filtered>` | Y or N | Y if the read is filtered (did not pass), N otherwise |
+| `<control number>` | Numerical | 0 when none of the control bits are on, otherwise it is an even number. On HiSeq X systems, control specification is not performed and this number is always 0 |
+| `<sample number>` | Numerical | Sample number from sample sheet |
+
+```txt title="Example.fastq"
+@071112_SLXA-EAS1_s_7:5:1:817:345
+GGGTGATGGCCGCTGCCGATGGCGTC
+AAATCCCACC
++
+IIIIIIIIIIIIIIIIIIIIIIIIII
+IIII9IG9IC
+@071112_SLXA-EAS1_s_7:5:1:801:338
+GTTCAGGGATACGACGTTTGTATTTTAAGAATCTGA
++
+IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII6IBI
+```
+
+## SAM/BAM/CRAM (.sam, .bam, .cram)
+
+- SAM (Sequence Alignment/Map): Text format for storing sequence alignments against a reference genome
+- BAM: Binary version of SAM, compressed and indexed for faster processing
+- CRAM: Highly compressed reference-based alternative to BAM, designed for long-term storage
+
+## FASTA (.fasta, .fa)
+
+Simple text-based format for representing nucleotide or peptide sequences. Typically, FASTA is used to store reference data (such as those from curtated databases).
+
+*Each entry consists of*:
+
+- A description line (starts with '>')
+- The sequence data on subsequent lines
+
+```txt title="Example.fasta"
+:filename: example.fasta
+>Mus_musculus_tRNA-Ala-AGC-1-1 (chr13.trna34-AlaAGC)
+GGGGGTGTAGCTCAGTGGTAGAGCGCGTGCTTAGCATGCACGAGGcCCTGGGTTCGATCC
+CCAGCACCTCCA
+>Mus_musculus_tRNA-Ala-AGC-10-1 (chr13.trna457-AlaAGC)
+GGGGGATTAGCTCAAATGGTAGAGCGCTCGCTTAGCATGCAAGAGGtAGTGGGATCGATG
+CCCACATCCTCCA
+```
+
+## VCF/BCF (.vcf, .bcf)
+
+- VCF (Variant Call Format): Text file format for storing gene sequence variations
+- BCF: Binary version of VCF
+
+*Contains information about*:
+
+- Genomic position of variants
+- Reference and alternative alleles
+- Quality scores
+- Filter statuses
+- Additional annotations
+
+## BED (.bed)
+
+Browser Extensible Data format for defining genomic features.
+
+*Contains*:
+
+- Chromosome name
+- Start position
+- End position
+- Optional fields (name, score, strand, etc.)
+Commonly used for displaying data tracks in genome browsers
+
+| Column number | Title | Definition | Required |
+| --- | --- | --- | --- |
+| **1** | **chrom** | Chromosome (e.g. chr3, chrY, chr2_random) or scaffold (e.g. scaffold10671) name | Yes |
+| **2** | **chromStart** | Start coordinate on the chromosome or scaffold for the sequence considered (the first base on the chromosome is numbered 0 i.e. the number is zero-based) | Yes |
+| **3** | **chromEnd** | End coordinate on the chromosome or scaffold for the sequence considered. This position is non-inclusive, unlike chromStart (the first base on the chromosome is numbered 1 i.e. the number is one-based) | Yes |
+| **4** | **name** | Name of the line in the BED file | No |
+| **5** | **score** | Score between 0 and 1000 | No |
+| **6** | **strand** | DNA strand orientation (positive ["+"] or negative ["-"] or "." if no strand) | No |
+| **7** | **thickStart** | Starting coordinate from which the annotation is displayed in a thicker way on a graphical representation (e.g.: the start codon of a gene) | No |
+| **8** | **thickEnd** | End coordinates from which the annotation is no longer displayed in a thicker way on a graphical representation (e.g.: the stop codon of a gene) | No |
+| **9** | **itemRgb** | RGB value in the form R, G, B (e.g. 255,0,0) determining the display color of the annotation contained in the BED file | No |
+| **10** | **blockCount** | Number of blocks (e.g. exons) on the line of the BED file | No |
+| **11** | **blockSizes** | List of values separated by commas corresponding to the size of the blocks (the number of values must correspond to that of the "blockCount") | No |
+| **12** | **blockStarts** | List of values separated by commas corresponding to the starting coordinates of the blocks, coordinates calculated relative to those present in the chromStart column (the number of values must correspond to that of the "blockCount") | No |
+
+## GFF/GTF (.gff, .gtf)
+
+- GFF (General Feature Format): Describes genes and other features of DNA, RNA, and protein sequences
+- GTF (Gene Transfer Format): More specialized version of GFF
+
+*Contains*:
+
+- Feature coordinates
+- Feature types
+- Score
+- Strand information
+- Frame
+- Attribute-value pairs
+
+| Column number | Title | Definition | Required |
+| --- | --- | --- | --- |
+| **1** | **seqname** | Name of the chromosome or scaffold; chromosome names can be given with or without the 'chr' prefix. Must be a standard chromosome name or an Ensembl identifier such as a scaffold ID, without additional content like species or assembly | Yes |
+| **2** | **source** | Name of the program that generated this feature, or the data source (database or project name) | Yes |
+| **3** | **feature** | Feature type name, e.g. Gene, Variation, Similarity | Yes |
+| **4** | **start** | Start position of the feature, with sequence numbering starting at 1 | Yes |
+| **5** | **end** | End position of the feature, with sequence numbering starting at 1 | Yes |
+| **6** | **score** | A floating point value | Yes (use '.' if empty) |
+| **7** | **strand** | Defined as + (forward) or - (reverse) | Yes (use '.' if empty) |
+| **8** | **frame** | One of '0', '1' or '2'. '0' indicates that the first base of the feature is the first base of a codon, '1' that the second base is the first base of a codon, and so on | Yes (use '.' if empty) |
+| **9** | **attribute** | A semicolon-separated list of tag-value pairs, providing additional information about each feature | Yes |
+
+## WIG (.wig)
+
+The WIG (wiggle) format is used for displaying continuous-valued data in track format. It is particularly useful for showing expression data, probability scores, and GC percentage.
+
+WIG files be formatted in two main ways:
+
+### Fixed Step
+
+```
+fixedStep chrom=chrN start=pos step=stepInterval [span=windowSize]
+dataValue
+dataValue
+dataValue
+```
+
+Required fields:
+
+| Field | Description |
+| --- | --- |
+| **chrom** | Chromosome name (e.g., chr1) |
+| **start** | Starting position |
+| **step** | Distance between starts of adjacent windows |
+| **dataValue** | Numerical data value for each position |
+
+Optional fields:
+
+| Field | Description |
+| --- | --- |
+| **span** | Size of window (defaults to step size) |
+
+### Variable Step
+
+```
+variableStep chrom=chrN [span=windowSize]
+chromStart  dataValue
+chromStart  dataValue
+chromStart  dataValue
+```
+
+Required fields:
+
+| Field | Description |
+| --- | --- |
+| **chrom** | Chromosome name |
+| **chromStart** | Start position of each window |
+| **dataValue** | Numerical data value for each position |
+
+Optional fields:
+
+| Field | Description |
+| --- | --- |
+| **span** | Size of window (defaults to 1) |
+
+
+```txt title="Example1.wig"
+fixedStep chrom=chr3 start=400601 step=100 span=100
+11.0
+22.0
+33.0
+```
+
+```txt title="Example2.wig"
+variableStep chrom=chr3 span=150
+500701  5.0
+500801  3.0
+500901  8.0
+```
+
+## BAI/CSI (.bai, .csi)
+
+- BAI: Index format for BAM files
+- CSI: Coordinate-sorted index format
+
+These index files are typically required by common [CLI tools]()
+
+*Enables*:
+
+- Random access to compressed files
+- Quick retrieval of alignments
+- Efficient genome browsing
+
+# bigWig/bigBed (.bw, .bb)
+
+- bigWig: Binary format of `.wig` files
+- bigBed: Binary format of `.bed` files
+
+*Advantages*:
+
+- Efficient random access
+- Reduced memory usage
+- Fast display in genome browsers

@@ -1,0 +1,11 @@
+---
+import type { Props } from '@astrojs/starlight/props';
+import Default from '@astrojs/starlight/components/PageTitle.astro';
+import Authors from './Authors.astro';
+
+console.log("YO OVER HERE")
+console.log(Object.keys(Astro.props));
+---
+
+<Default {...Astro.props} />
+<Authors authors={Astro.props.entry.data.authors} />

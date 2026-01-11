@@ -1,0 +1,83 @@
+--- 
+title: Temrinal Multiplexer
+---
+
+## Screen
+
+[GNU Screen](https://www.gnu.org/software/screen/) allows you to manage multiple terminal sessions within a single window and keeps processes running even if your connection drops, making it useful running remote jobs.
+
+### Options
+
+```
+screen -S [name]   # Start new named session
+screen -ls         # List sessions
+screen -r [name]   # Reattach to session
+screen -d -r       # Detach existing and reattach here
+```
+
+### Shortcut keys
+
+```
+Ctrl-a + c       # Create new window
+Ctrl-a + "       # List/select windows
+Ctrl-a + n/p     # Next/previous window
+Ctrl-a + d       # Detach session
+Ctrl-a + k       # Kill window
+Ctrl-a + S       # Split horizontal
+Ctrl-a + |       # Split vertical 
+Ctrl-a + <TAB>   # Switch split regions
+Ctrl-a + X       # Close active split
+```
+
+### Shortcut keys
+
+```txt
+Ctrl-a + c        # Create a new window.
+Ctrl-a + "        # Window selector
+Ctrl-a + w        # Displays the list of all the windows currently opened.
+Ctrl-a + A        # Renames the current windows. The name will appear when you will list the list of windows opened with Ctrl-a + w.
+Ctrl-a + n        # Go to the next windows.
+Ctrl-a + p        # Go to the previous windows.
+Ctrl-a + Ctrl-a   # Go back to the last windows used.
+Ctrl-a + k        # Close the current windows (kill).
+Ctrl-a + S        # Split the current windows horizontally. To switch between the windows, do Ctrl-a + <TAB>.
+Ctrl-a + |        # Split the current windows vertically.
+Ctrl-a + X        # Close active Split window
+Ctrl-a + Q        # Close all Split windows
+Ctrl-a + d        # Detach a screen session without stopping it.
+Ctrl-a + r        # Reattach a detached screen session.
+Ctrl-a + <ESC>    # Start the copy mode.
+```
+
+<details>
+<summary>All screen command flags and shortcuts</summary>
+-a               # Force all capabilities into each window’s termcap.
+-A -[r|R]        # Adapt all windows to the new display width & height.
+-c [file]        # Read configuration file instead of ‘.screenrc’.
+-d (-r)          # Detach the elsewhere running screen (and reattach here).
+-dmS [name]      # Start as daemon: Screen session in detached mode.
+-D (-r)          # Detach and logout remote (and reattach here).
+-h [lines]       # Set the size of the scrollback history buffer.
+-i               # Interrupt output sooner when flow control is on.
+-l               # Make the login mode on (update /var/run/utmp), -ln = off.
+-ls [match]      # Display all the attached screens.
+-L               # Turn on output logging.
+-m               # Ignore $STY variable, do create a new screen session.
+-O               # Choose optimal output rather than exact vt100 emulation.
+-p [window]      # Preselect the named window if it exists.
+-q               # Quiet startup. Exits with non-zero return code if unsuccessful.
+-Q               # Commands will send the response to the stdout of the querying process.
+-r [session]     # Reattach to a detached screen process.
+-R               # Reattach if possible, otherwise start a new session.
+-S [sockname]    # Name this session .sockname instead of …
+-t [title]       # Set title. (window’s name).
+-T [term]        # Use term as $TERM for windows, rather than “screen”.
+-U               # Tell screen to use UTF-8 encoding.
+-v               # Print Screen version.
+-x               # Attach to a not detached screen. (Multi display mode).
+-X               # Execute as a screen command in the specified session.
+</details>
+
+## Tmux
+
+- [Cheatsheet](https://tmuxcheatsheet.com/)

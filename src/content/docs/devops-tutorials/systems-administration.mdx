@@ -1,0 +1,104 @@
+---
+title: Systems Administration
+---
+
+## Cron
+
+### What is Cron?
+
+Cron is a job scheduler that runs commands automatically at specified times on Unix-like systems.
+
+### Basic Syntax
+
+```txt
+* * * * * command
+│ │ │ │ │
+│ │ │ │ └─── Day of week (0-7, Sunday = 0 or 7)
+│ │ │ └───── Month (1-12)
+│ │ └─────── Day of month (1-31)
+│ └───────── Hour (0-23)
+└─────────── Minute (0-59)
+```
+
+### Common Examples
+
+#### Every minute
+
+```bash
+* * * * * echo "Hello" >> /tmp/hello.log
+```
+
+#### Every hour at minute 30
+
+```bash
+30 * * * * /path/to/script.sh
+```
+
+#### Every day at 2:30 AM
+
+```bash
+30 2 * * * /usr/bin/backup.sh
+```
+
+#### Every Monday at 9 AM
+
+```bash
+0 9 * * 1 /home/user/weekly-report.py
+```
+
+#### Every 5 minutes
+
+```bash
+*/5 * * * * /usr/local/bin/check-status.sh
+```
+
+### How to Use Cron
+
+#### Edit your crontab
+
+```bash
+crontab -e
+```
+
+#### List current cron jobs
+
+```bash
+crontab -l
+```
+
+#### Remove all cron jobs
+
+```bash
+crontab -r
+```
+
+### Important Tips
+
+- Use full paths for commands and files
+- Test your scripts manually first
+- Check logs: `grep CRON /var/log/syslog`
+- For output, redirect to a file: `command >> /tmp/output.log 2>&1`
+- Remember cron runs with minimal environment variables
+
+### Quick Reference
+
+| Time | Cron Expression |
+|------|----------------|
+| Every minute | `* * * * *` |
+| Hourly | `0 * * * *` |
+| Daily at midnight | `0 0 * * *` |
+| Weekly (Sunday) | `0 0 * * 0` |
+| Monthly | `0 0 1 * *` |
+| Yearly | `0 0 1 1 *` |
+
+### Example: Weekly Backup
+
+```bash
+# Edit crontab
+crontab -e
+
+# Add this line for weekly backup at 6 AM on Monday
+0 6 * * 1 /home/<USERNAME>/.local/bin/dropbox_uploader.sh upload /zata/zippy/<USERNAME> zata_backup
+```
+
+See [dropbox-uploader.sh section](./backup.mdf/#dropbox-uploader) for more details about this backup tool.

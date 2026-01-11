@@ -1,0 +1,24 @@
+---
+import type { ComponentProps } from 'astro/types';
+import { Icon } from '@astrojs/starlight/components';
+
+interface Props {
+  icon: ComponentProps<typeof Icon>['name'];
+  gap?: string;
+}
+
+const { icon, gap = '1rem' } = Astro.props;
+---
+
+<span class="icon-label" style={`--gap: ${gap}`}>
+  <Icon name={icon} />
+  <slot />
+</span>
+
+<style>
+  .icon-label {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--gap);
+  }
+</style>

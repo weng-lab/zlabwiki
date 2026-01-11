@@ -1,0 +1,130 @@
+--- 
+title: Git
+---
+
+import { Steps } from '@astrojs/starlight/components';
+
+[See **Git in a nutshell**](https://git-scm.com/book/en/v2/Getting-Started-What-is-Git%3F)
+
+## Initial Setup
+
+| Command | Description |
+|---------|-------------|
+| `git config --global user.name "Your Name"` | Set your name for all Git repositories |
+| `git config --global user.email "your.email@example.com"` | Set your email |
+| `git init` | Create a new Git repository in your current directory |
+
+## Basic Commands
+
+| Command | Description |
+|---------|-------------|
+| `git status` | Show the current state of your working directory and staging area |
+| `git add <file>` | Add a specific file to the staging area |
+| `git add .` | Add all changed files to the staging area |
+| `git commit -m "message"` | Create a commit with your staged changes |
+| `git log` | View the commit history |
+| `git diff` | Show unstaged changes in your working directory |
+| `git diff --staged` | Show changes staged for commit |
+
+## Branching and Merging
+
+| Command | Description |
+|---------|-------------|
+| `git branch` | List all local branches |
+| `git branch <branch-name>` | Create a new branch |
+| `git checkout <branch-name>` | Switch to a different branch |
+| `git checkout -b <branch-name>` | Create and switch to a new branch |
+| `git merge <branch-name>` | Merge specified branch into current branch |
+| `git branch -d <branch-name>` | Delete a branch |
+
+## Remote Repository Commands
+
+| Command | Description |
+|---------|-------------|
+| `git remote add origin <url>` | Connect your local repository to a remote one |
+| `git push origin <branch-name>` | Upload your changes to the remote repository |
+| `git pull origin <branch-name>` | Download and integrate remote changes |## Typical Git Workflow
+
+<Steps>
+
+<ol>
+
+<li>
+Create a new feature branch
+
+```bash
+git checkout -b username/feature
+```
+</li>
+
+<li>
+Make changes and track them
+
+```bash
+# Edit your files
+git status  # Check what files have changed
+git add script.py notebook.ipynb
+git commit -m "Add new script and notebook"
+```
+</li>
+
+<li>
+Update your branch with main branch changes
+
+```bash
+git checkout main
+git pull origin main
+git checkout username/feature
+git merge main  # Merge main into your feature branch
+```
+</li>
+
+<li>
+Push your changes and create a pull request
+
+```bash
+git push origin username/feature
+```
+</li>
+
+<li>
+After pull request approval, merge and cleanup
+
+```bash
+git checkout main
+git pull origin main
+git branch -d username/feature # Delete the feature branch locally
+```
+</li>
+
+</ol>
+
+</Steps>
+
+## Common Scenarios
+
+Undo changes to a file
+
+```bash
+git restore HEAD <file>
+```
+
+Amending the last commit
+
+```bash
+git commit --amend -m "New commit message"
+```
+
+Creating a .gitignore file
+
+```bash
+# Create .gitignore
+echo "node_modules/" > .gitignore
+echo "*.log" >> .gitignore
+git add .gitignore
+git commit -m "Add .gitignore file"
+```
+
+## Full tutorial
+
+You can find the official Git tutorial [here](https://git-scm.com/docs/gittutorial) which is more in-depth.

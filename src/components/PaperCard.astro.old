@@ -1,0 +1,75 @@
+---
+const { 
+  title, 
+  authors, 
+  journal, 
+  volume, 
+  pages, 
+  year, 
+  date,
+  doi,
+  citations,
+  url 
+  } = Astro.props;
+
+  const authorString = Array.isArray(authors) ? authors.join(", ") : authors;
+---
+
+<article class="paper-card">
+  <span class="paper-type">Article</span>
+  {date && <time datetime={date}>{date}</time>}
+  
+  <h3 class="paper-title">
+    <a href={url || `https://doi.org/${doi}`}>{title}</a>
+  </h3>
+  
+  <p class="paper-authors">{authorString}</p>
+  
+  <p class="paper-meta">
+    <em>{journal}</em>
+    {volume && <>, vol. {volume}</>}
+    {pages && <>, pp. {pages}</>}
+    ({year})
+  </p>
+  
+  {citations && <p class="paper-citations">{citations} citations</p>}
+</article>
+
+<style>
+  .paper-card {
+    padding: 1rem;
+    border: 1px solid var(--sl-color-gray-5);
+    border-radius: 8px;
+    margin-bottom: 1rem;
+  }
+  .paper-type {
+    font-size: 0.75rem;
+    background: var(--sl-color-accent);
+    color: white;
+    padding: 0.1rem 0.5rem;
+    border-radius: 4px;
+    margin-right: 0.5rem;
+  }
+  .paper-title {
+    margin: 0.5rem 0;
+    font-size: 1.1rem;
+  }
+  .paper-title a {
+    color: var(--sl-color-text);
+    text-decoration: none;
+  }
+  .paper-title a:hover {
+    text-decoration: underline;
+  }
+  .paper-authors {
+    color: var(--sl-color-gray-2);
+    font-size: 0.9rem;
+  }
+  .paper-meta {
+    font-size: 0.85rem;
+  }
+  .paper-citations {
+    font-size: 0.8rem;
+    color: var(--sl-color-gray-3);
+  }
+</style>
