@@ -1,0 +1,459 @@
+---
+title: Docker Containerization
+sidebar:
+  hide: true
+---
+
+## Overview
+
+Docker is a containerization system that packages software and its dependencies into _containers_: isolated, reproducible environments. Containers let you run the same workflow with the same software versions on different machines (laptop, server, cloud) without reinstalling anything.
+
+In bioinformatics, tools often rely on specific compiler versions, system libraries, GPU stacks, or complex R/Python setups. Docker solves major reproducibility and environment-management problems, and removes the need to repeatedly configure difficult environments on different machines.
+
+---
+
+## Why Docker Matters for Bioinformatics
+
+### Reproducibility
+
+- Exact versions of tools, libraries, compilers, and R/Python packages are frozen inside an image.
+- Pipelines can be re-run identically years later.
+- Eliminates "it worked on my machine" problems.
+
+### Portability
+
+- Build an environment once, then run it anywhere: your laptop, a lab server, Slurm via Singularity/Apptainer, or the cloud.
+- Ensures that collaborators, regardless of machine, use the same software setup without any manual installation.
+  - Sharing an analysis no longer means sending installation instructions. You just say: _"Use this image."_
+
+---
+
+## Core Terms
+
+These terms follow the natural lifecycle of a Docker environment: you store images in a registry, pull or build one from a Dockerfile, and then run containers from it.
+
+### Registry (Docker Hub)
+
+A remote storage location for images. You can:
+
+- pull public images,
+- push lab-maintained images,
+- tag versions for release.
+
+Docker Hub is the default public registry, but there are other options (e.g., GitHub Container Registry at `ghcr.io`, or private lab registries).
+
+### Image
+
+A read-only template built from a Dockerfile. Images are immutable and versioned.  
+Images can be:
+
+- pulled from Docker Hub or another registry,
+- or built locally during development.
+
+Images define the environment; containers run the environment.
+
+### Dockerfile
+
+A text file (named `Dockerfile`, no extension) that describes how to build an image: base images, system packages, environment variables, R/Python packages, etc.  
+This is analogous to a "recipe" for your environment and is version-controlled along with your workflow.
+(there is an example Dockerfile at the end of this document with detailed comments on best practices and patterns for bioinformatics environments)
+
+### Container
+
+A running (or stopped) instance of an image.  
+Containers are:
+
+- lightweight,
+- disposable,
+- and isolated.
+
+### Layers
+
+Every `RUN`, `COPY`, and `ADD` instruction in a Dockerfile creates a new **layer** — a cached, incremental diff on top of the previous state. Layers are the key to understanding both Docker's efficiency and its build behavior:
+
+- **Caching:** Docker caches each layer. If nothing above a given instruction has changed, Docker reuses the cached result and skips re-running it. This makes iterative development fast.
+- **Cache invalidation:** Changing any instruction invalidates the cache for that layer *and every layer below it*. This means layer order matters significantly.
+- **Layer ordering strategy:**
+  - Put slow, stable steps (OS package installs, large library installs) **near the top**.
+  - Put fast, frequently changing steps (copying your own scripts, final config) **near the bottom**.
+  - This way, rebuilding after small changes only re-runs the last few layers instead of the whole file.
+
+
+---
+
+## Common Docker Commands
+
+> Focused on the commands you will use most often.  
+> Full docs: [Docker CLI Reference](https://docs.docker.com/reference/cli/docker/)
+
+---
+
+### Build an Image
+
+Creates a reproducible environment from your Dockerfile.
+
+```bash
+docker build -t <image-name>:<tag> <path-to-Dockerfile>
+```
+
+- `<image-name>` → the name you give your image
+- `<tag>` → version label (e.g., `latest`, `v1`)
+- `<path-to-Dockerfile>` → folder containing your Dockerfile
+
+---
+
+### Pull an Image
+
+Downloads the image from the specified registry to your local machine so you can run it.
+
+```bash
+docker pull <registry>/<username>/<repository>:<tag>
+```
+
+- `<registry>` → optional, defaults to Docker Hub if omitted; for other registries, specify the URL (e.g., `ghcr.io`)
+- `<username>` → account or namespace hosting the image
+- `<repository>` → the name of the image
+- `<tag>` → version or variant of the image
+
+---
+
+### Push an Image
+
+Uploads your local image to a remote registry.
+
+```bash
+docker push <registry>/<username>/<repository>:<tag>
+```
+
+- Requires authentication with the registry (`docker login` or `docker login <registry>`).
+- Only new layers are uploaded; layers that already exist remotely are skipped.
+- Useful for distributing lab-maintained images or sharing analysis environments.
+- Allows others to pull the exact same image.
+- Lets you back up your images remotely.
+
+### Open an Interactive Container
+
+Opens a shell inside the container to test tools or run commands.
+
+```bash
+docker run -it --rm <image-name>:<tag> bash
+```
+
+- `-it` → interactive terminal
+- `--rm` → (optional, but recommended) delete container automatically when you exit
+
+**Exit the container:**
+
+```bash
+exit
+```
+
+or press `Ctrl+D`.
+
+---
+
+### List Your Images
+
+```bash
+docker images
+```
+
+**Example output:**
+
+```
+IMAGE                                            ID             DISK USAGE
+autumnusomega/bioinformatics:nmf-stuff           04d38c6d4aec       4.65GB
+autumnusomega/bioinformatics:spatial             5f711a88e315       16.6GB
+```
+
+---
+
+### List Running Containers
+
+```bash
+docker ps
+```
+
+**Example output:**
+
+```
+CONTAINER ID   IMAGE           COMMAND      STATUS      PORTS   NAMES
+1a2b3c4d5e6f   myimage:v1     "/bin/bash"   Up 5m               test_run
+```
+
+- Shows currently running containers, their IDs, image, command, and status.
+
+---
+
+### Remove a Container
+
+Deletes a stopped container to free space.
+
+```bash
+docker rm <container-id>
+```
+
+- You can stop a running container first with:
+
+```bash
+docker stop <container-id>
+```
+
+---
+
+### Remove an Image
+
+Deletes an image from your machine.
+
+```bash
+docker rmi <image-name>:<tag>
+```
+
+- Cannot remove an image that is currently being used by a container.
+
+---
+
+## Best Practices for Bioinformatics Containers
+
+**Keep images minimal**
+
+- Install only the tools needed for the workflow.
+- Use secondary package managers (e.g., `conda`, `BiocManager`) _only if necessary_.
+- Either start from a minimal base image (e.g., `ubuntu`, `debian`) or a bioinformatics-focused base (e.g., `biocontainers`, `rocker`), or a task-specific base (e.g. Greg's CUDA image that is compatible with our servers).
+
+**Pin versions everywhere when exact versions matter**
+
+- In the Dockerfile (`samtools=1.19`, R version, Python version).
+- In requirements files.
+- In Snakemake envs to match the container.
+
+**Order layers appropriately**
+
+- Slow, stable installs (OS packages, compilers, large frameworks) near the top.
+- Fast, frequently-changing steps near the bottom.
+
+---
+
+## Example: Annotated Bioinformatics Dockerfile
+
+The following is a real Dockerfile used for an R/Python single-cell and spatial genomics environment, attached to VSCode via Dev Containers. It demonstrates many of the patterns described above.
+
+```dockerfile
+# Pin the base image to an exact R version using the rocker project's versioned images.
+# rocker/r-ver gives you a specific R release on top of a Debian base.
+# Pinning here means this exact R version is frozen for all users of this image.
+FROM rocker/r-ver:4.4.2
+
+# Suppress interactive prompts that would stall a headless build.
+ENV DEBIAN_FRONTEND=noninteractive
+ENV TZ="America/New_York"
+
+# Set up a Python virtual environment managed by uv (see below).
+# Prepending to PATH means python/pip commands inside RUN steps
+# will resolve to the venv automatically — no activation needed.
+ENV VIRTUAL_ENV=/python-venv
+ENV PATH=${VIRTUAL_ENV}/bin:${PATH}
+
+# Also add the user-local bin to PATH for uv itself.
+ENV PATH=/root/.local/bin:${PATH}
+RUN echo -e "Current path:" && echo -e $PATH | tr ":" "\n"
+
+# --- Utility packages ---
+# Split into a separate RUN from system libraries so that a change to one
+# group (e.g., adding a new utility) doesn't invalidate the library layer cache.
+RUN apt-get update && apt-get install -y \
+    curl \
+    gpg \
+    git \
+    gh \
+    vim \
+    wget \
+    cmake \
+    btop \
+    tree
+
+# --- System libraries needed by R and Python packages ---
+# Kept separate from utilities for cache granularity.
+# These are C/C++ libraries that R and Python packages compile against at install time.
+# some libraries that are needed for future installs are not included here as pak handeles their installation if missing (see below)
+# commented-out entries are kept for documentation — they were tested and not needed.
+RUN apt-get install -y \
+    python3 python3-pip python3-dev \
+    libbz2-dev \
+    liblzma-dev \
+    libhdf5-dev \
+    libsodium-dev \
+    libmagick++-dev \
+    libzmq5
+#    libzmq3-dev
+#    libfftw3-dev
+
+# --- Cleanup in the same logical group ---
+# Must be a separate RUN here since it follows the two install steps above.
+# For even tighter images, you could merge all three apt RUN blocks into one.
+RUN apt-get -y clean && \
+    apt-get -y autoremove && \
+    rm -rf /var/lib/apt/lists/*
+
+# --- R package management via pak ---
+# pak is a modern, parallel, dependency-resolving alternative to install.packages().
+# options(warn=2) promotes warnings to errors so a silent package failure
+# doesn't produce a broken image that appears to have built successfully.
+RUN R -e "options(warn=2); install.packages('pak')"
+
+# Set BiocManager to a specific Bioconductor release.
+# This pins all Bioconductor packages to the 3.20 release tree,
+# ensuring consistent package versions regardless of when the image is rebuilt.
+RUN R -e "options(warn=2); pak::pak('BiocManager')"
+RUN R -e "options(warn=2); BiocManager::install(version = '3.20')"
+
+# Install R packages in a single pak::pak() call for parallel resolution.
+# pak handles both CRAN and Bioconductor packages transparently.
+RUN R -e "options(warn=2); pak::pak(c( \
+    'languageserver', 'IRkernel', \
+    'magick', \
+    'spatialLIBD', 'SpatialExperiment', 'zellkonverter', \
+    'tidyverse', 'duckplyr', 'arrow', 'ape', \
+    'ggsci', 'ggstatsplot', 'gganimate', 'ggthemes', 'ggrepel', 'ggforce', \
+    'cowplot', 'tidytree', 'data.table', 'scales', 'DT','microplot', 'rmeta', 'plotly', \
+    'ggstar', 'ggnewscale', 'ggalluvial', 'TDbook', 'aplot', 'patchwork', 'igraph', 'ggraph', 'R.utils', 'ggpubr', 'ggVennDiagram' \
+    ))"
+
+# --- Git SHA pinning for Bioconductor packages not on CRAN/PyPI ---
+# When a package is only available via a git repo (or when you need an exact
+# intermediate commit rather than a release tag), clone it and check out
+# the specific commit SHA. This is the most reproducible pinning strategy
+# possible — a tag can be moved, but a SHA cannot.
+# The repo is cloned to /tmp and deleted after install to keep the image small.
+# This is also how you would install a package that has an unusual installation process
+# (e.g., needs a custom configure script or non-standard build steps).
+#
+# Verified the safe version with the live container that first pulled the package.
+# RUN git clone https://git.bioconductor.org/packages/humanHippocampus2024 /tmp/hh \
+#     && cd /tmp/hh \
+#     && git checkout RELEASE_3_21 \
+#     && git checkout 39f0a1c \
+#     && R CMD INSTALL . \
+#     && rm -rf /tmp/hh
+
+# --- Python: install uv and create a managed venv ---
+# uv is a fast Rust-based Python package installer.
+# UV_UNMANAGED_INSTALL places the uv binary into /root/.local/bin (already on PATH).
+# Using a venv (rather than --system) keeps Python installs isolated and
+# means no --break-system-packages flags are needed.
+RUN curl -LsSf https://astral.sh/uv/install.sh | env UV_UNMANAGED_INSTALL="/root/.local/bin" sh
+RUN uv venv ${VIRTUAL_ENV}
+
+# Install Python packages via uv into the venv.
+# Comments inside the install block document intent and pin rationale inline —
+# this is useful for future maintainers or when revisiting a pinned version.
+RUN uv pip install --no-cache-dir \
+
+    # Jupyter ecosystem
+    jupyterlab \
+    bash_kernel \
+    jupyterlab-git \
+    ipywidgets \
+    jupyterlab-fasta \
+    ipysheet \
+    jupyterlab-horizon-theme \
+    jupyterlab-lsp \
+    'python-lsp-server[all]' \
+    jupyterlab_vim \
+    jupyterlab_execute_time \
+    jupytext \
+    ipykernel \
+
+    # Bioinformatics
+    # biopython \
+    # biotite \
+    # logomaker \
+    # pysam \
+    # HTSeq \
+    # pyfaidx \
+    # pyBigWig \
+    # pyliftover \
+    # deeptools \
+    # pyGenomeTracks \
+    # CrossMap \
+    # PyVCF3 \
+    # pyfastx \
+    # pyensembl \
+    snakemake \
+    # scanpy is pinned to 1.11.4 and squidpy to 1.6.6 because squidpy 1.7.0
+    # has a known compatibility issue as of 2026-01: https://github.com/scverse/squidpy/issues/1101
+    # When that issue is resolved, these pins can be relaxed.
+    scanpy==1.11.4 \
+    squidpy==1.6.6 \
+    bioframe \
+    anndata \
+    # tobias \
+    pybigtools \
+    pybedtools \
+    gffutils \
+
+    # Jacob
+    # memelite \
+    # bpnet-lite \
+    # tangermeme \
+    # ledidi \
+    bam2bw \
+
+    # Machine Learning
+    # torch \
+    # torch-summary \
+    # tensorflow \
+    scikit-learn \
+    umap-learn[plot] \
+    fastcluster \
+
+    # Data Science
+    numpy \
+    pandas \
+    polars \
+    scipy \
+    statsmodels \
+    matplotlib \
+    matplotlib-venn \
+    mpl-scatter-density \
+    # upsetplot \
+    # plotnine \
+    seaborn \
+    scikit-learn \
+    plotly \
+    bokeh \
+    panel \
+    # streamlit \
+
+    # GASTON (spatial analysis)
+    gaston-spatial \
+    # UV can install directly from git repos, which is useful for packages that aren't on PyPI yet
+    # 'git+https://github.com/raphael-group/Multi-GASTON/'
+    # 'git+https://github.com/raphael-group/GASTON-Mix'
+    # GASTON tutorial dependencies:
+    glmpca \
+    kneed \
+    # setuptools is pinned because the GASTON tutorial imports pkg_resources,
+    # which was removed from newer setuptools. Pin to a version that still ships it.
+    'setuptools==69.5.1' \
+
+    # Dev tools
+    black \
+    isort \
+    tqdm \
+    icecream
+
+# --- Final setup ---
+# Register the R kernel with Jupyter (user=FALSE installs system-wide in the image).
+RUN R -e "options(warn=2); IRkernel::installspec(user = FALSE)"
+
+# Install the bash kernel for Jupyter.
+RUN python -m bash_kernel.install
+
+# Create expected mount points so Docker Compose can bind-mount data directories
+# without permission errors on first run.
+# It is usually a good idea to mount /data and /zata when working on the zervers, but may need to 
+# be removed for use outside of the lab
+RUN mkdir -p /data /zata
+```
+
